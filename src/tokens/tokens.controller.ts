@@ -7,10 +7,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateTokenDto } from './dto/create-token.dto';
 import { UpdateTokenDto } from './dto/update-token.dto';
 import { TokensService } from './tokens.service';
 
+@ApiBearerAuth()
+@ApiTags('Tokens')
 @Controller('tokens')
 export class TokensController {
   constructor(private readonly tokensService: TokensService) {}

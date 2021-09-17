@@ -1,5 +1,5 @@
 import { Prisma } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { argon2id, hash as hashPassword } from 'argon2';
 import { PrismaService } from 'src/utils/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -32,19 +32,34 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  findOne(id: string) {
-    return this.prisma.user.findUnique({ where: { id } });
+  async findOne(id: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    if (!user) throw new NotFoundException(`User with id ${id}, not found!`);
+    return user;
   }
 
-  findOneByUsername(username: string) {
-    return this.prisma.user.findUnique({ where: { username } });
+  async findOneByUsername(username: string) {
+    const user = await this.prisma.user.findUnique({ where: { username } });
+
+    if (!user)
+      throw new NotFoundException(`User with username ${username}, not found!`);
+
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    await this.findOne(id);
+
+    return this.prisma.user.update({
+      where: { id },
+      data: updateUserDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    await this.findOne(id);
+
+    return this.prisma.user.delete({ where: { id } });
   }
 }
