@@ -1,23 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { DocumentType, UserType } from '@prisma/client';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { CreateProfileDto } from './create-profile.dto';
 
-export class UpdateProfileDto {
-  name?: string;
-  email?: string;
-  document?: string;
-
-  @ApiProperty({ enum: ['CPF', 'CNPG'] })
-  document_type?: DocumentType;
-
-  @ApiProperty({ enum: ['PF', 'PJ'] })
-  user_type?: UserType;
-  phone?: number;
-  street?: string;
-  street_number?: string;
-  complementary?: string;
-  neighborhood?: string;
-  city?: string;
-  state?: string;
-  zipcode?: string;
-  country?: string;
-}
+export class UpdateProfileDto extends PartialType(
+  OmitType(CreateProfileDto, [
+    'email',
+    'document',
+    'document_type',
+    'user_type',
+    'token',
+    'user',
+  ] as const),
+) {}

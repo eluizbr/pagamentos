@@ -2,7 +2,14 @@ import { Prisma } from '.prisma/client';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { argon2id, hash as hashPassword } from 'argon2';
 import { PrismaService } from 'src/utils/prisma.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+
+const select = {
+  id: true,
+  username: true,
+  email: true,
+  created_at: true,
+  updated_at: true,
+};
 
 @Injectable()
 export class UsersService {
@@ -29,37 +36,44 @@ export class UsersService {
   }
 
   findAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({ select });
   }
 
-  async findOne(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id } });
+  async findOne(where: Prisma.UserWhereUniqueInput) {
+    const user = await this.prisma.user.findUnique({
+      where,
+      select,
+    });
 
-    if (!user) throw new NotFoundException(`User with id ${id}, not found!`);
+    if (!user) throw new NotFoundException(`User with id ${where}, not found!`);
     return user;
   }
 
-  async findOneByUsername(username: string) {
-    const user = await this.prisma.user.findUnique({ where: { username } });
+  async findOneByUsername(where: Prisma.UserWhereUniqueInput) {
+    const user = await this.prisma.user.findUnique({ where, select });
 
     if (!user)
-      throw new NotFoundException(`User with username ${username}, not found!`);
+      throw new NotFoundException(`User with username ${where}, not found!`);
 
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    await this.findOne(id);
+  async update(
+    where: Prisma.UserWhereUniqueInput,
+    data: Prisma.UserUpdateInput,
+  ) {
+    await this.findOne(where);
 
     return this.prisma.user.update({
-      where: { id },
-      data: updateUserDto,
+      where,
+      data,
+      select,
     });
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
+  async remove(where: Prisma.UserWhereUniqueInput) {
+    await this.findOne(where);
 
-    return this.prisma.user.delete({ where: { id } });
+    return this.prisma.user.delete({ where, select });
   }
 }

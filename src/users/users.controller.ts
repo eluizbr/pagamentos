@@ -62,7 +62,7 @@ export class UsersController {
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+    return this.usersService.findOne({ id });
   }
 
   @ApiOperation({ summary: 'Update user password by ID' })
@@ -74,7 +74,7 @@ export class UsersController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update({ id }, updateUserDto);
   }
 
   @ApiOperation({ summary: 'Delete user by ID' })
@@ -83,6 +83,6 @@ export class UsersController {
   @ApiNotFoundResponse({ description: 'User Not found' })
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+    return this.usersService.remove({ id });
   }
 }

@@ -1,14 +1,13 @@
 import { Prisma } from '.prisma/client';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/utils/prisma.service';
-import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class ProfilesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: Prisma.ProfileCreateInput) {
-    const user: any = data.user;
+    const { user }: any = data;
 
     try {
       return await this.prisma.profile.create({
@@ -31,28 +30,26 @@ export class ProfilesService {
     return this.prisma.profile.findMany({ include: { token: true } });
   }
 
-  async findOne(id: string) {
+  async findOne(where: Prisma.ProfileWhereUniqueInput) {
     const profile = await this.prisma.profile.findUnique({
-      where: { id },
-      include: { token: true },
+      where,
     });
     if (!profile) {
-      throw new NotFoundException(`Pofile id ${id}, não existe!`);
+      throw new NotFoundException(`Pofile id ${where}, não existe!`);
     }
     return profile;
   }
 
-  async update(id: string, updateProfileDto: UpdateProfileDto) {
-    await this.findOne(id);
-
-    return this.prisma.profile.update({
-      where: { id },
-      data: updateProfileDto,
-    });
+  async update(
+    where: Prisma.ProfileWhereUniqueInput,
+    data: Prisma.ProfileUpdateInput,
+  ) {
+    const perfil = await this.findOne(where);
+    return await this.prisma.profile.update({ where, data });
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
-    return this.prisma.profile.delete({ where: { id } });
+  async remove(where: Prisma.ProfileWhereUniqueInput) {
+    await this.findOne(where);
+    return this.prisma.profile.delete({ where });
   }
 }
