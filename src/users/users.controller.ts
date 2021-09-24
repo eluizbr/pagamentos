@@ -29,6 +29,9 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  /**
+   * Create new user
+   */
   @Post()
   @ApiCreatedResponse({
     description: 'The user has been successfully created.',
@@ -42,6 +45,9 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  /**
+   * Get all users
+   */
   @Get()
   @ApiOkResponse({
     description: 'The user data',
@@ -54,6 +60,9 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  /**
+   * Get  user by ID
+   */
   @Get(':id')
   @ApiOperation({ summary: 'Get one user by ID' })
   @ApiOkResponse({
@@ -65,6 +74,10 @@ export class UsersController {
     return this.usersService.findOne({ id });
   }
 
+  /**
+   * Update user by ID
+   */
+  @Patch(':id')
   @ApiOperation({ summary: 'Update user password by ID' })
   @ApiOkResponse({
     description: 'The user data',
@@ -72,16 +85,18 @@ export class UsersController {
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update({ id }, updateUserDto);
   }
 
+  /**
+   * Remove user by ID
+   */
+  @Delete(':id')
   @ApiOperation({ summary: 'Delete user by ID' })
   @ApiOkResponse({ description: 'User has been deleted successfully' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiNotFoundResponse({ description: 'User Not found' })
-  @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove({ id });
   }

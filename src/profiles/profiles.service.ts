@@ -33,6 +33,7 @@ export class ProfilesService {
   async findOne(where: Prisma.ProfileWhereUniqueInput) {
     const profile = await this.prisma.profile.findUnique({
       where,
+      include: { token: true },
     });
     if (!profile) {
       throw new NotFoundException(`Pofile id ${where}, não existe!`);

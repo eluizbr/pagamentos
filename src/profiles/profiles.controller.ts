@@ -1,3 +1,4 @@
+import { Prisma } from '.prisma/client';
 import {
   Body,
   Controller,
@@ -18,7 +19,6 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './entities/profile.entity';
 import { ProfilesService } from './profiles.service';
@@ -38,7 +38,7 @@ export class ProfilesController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiBody({ type: Profile })
   @ApiOperation({ summary: 'Create new user profile' })
-  async create(@Body() createProfileDto: CreateProfileDto) {
+  async create(@Body() createProfileDto: Prisma.ProfileCreateInput) {
     return await this.profilesService.create(createProfileDto);
   }
 

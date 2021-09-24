@@ -32,11 +32,11 @@ model User {
   password      String      @db.VarChar(255)
   created_at    DateTime?   @default(now())
   updated_at    DateTime?   @updatedAt
-  profile       Profile?
+  profile       Profile[]
 
 }
 model Profile {
-  user            User            @relation( fields: [id], references: [id],onDelete: Cascade)
+  user            User[]          @relation( fields: [id], references: [id],onDelete: Cascade)
   id              String          @id  @db.VarChar(255)
   name            String          @db.VarChar(255)
   email           String          @unique @db.VarChar(255)

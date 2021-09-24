@@ -3,7 +3,7 @@ import { IsEmail, IsNumber, IsString, Length } from 'class-validator';
 import { IsCpfCnpjValid } from 'src/utils/IsCpfCnpjValid.service';
 import { IsProfileAlreadyExist } from 'src/utils/IsProfileAlreadyExist.service';
 
-export class CreateProfileDto implements Prisma.ProfileCreateInput {
+export class CreateProfileDto {
   @IsString()
   name: string;
 
@@ -57,7 +57,7 @@ export class CreateProfileDto implements Prisma.ProfileCreateInput {
   country?: string;
 
   @IsString()
-  user: Prisma.UserCreateNestedOneWithoutProfileInput;
+  user: string;
 
   token?: Prisma.TokenCreateNestedManyWithoutProfileInput;
 }
