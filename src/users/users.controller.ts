@@ -39,7 +39,7 @@ export class UsersController {
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiBody({ type: [CreateUserDto] })
+  @ApiBody({ type: CreateUserDto })
   @ApiOperation({ summary: 'Create new user' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);

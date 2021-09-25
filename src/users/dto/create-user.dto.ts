@@ -3,19 +3,19 @@ import { IsString, MinLength } from 'class-validator';
 import { IsUserAlreadyExist } from 'src/utils/IsUserAlreadyExist.service';
 
 export class CreateUserDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'joseSilva' })
   @IsUserAlreadyExist({
     message: 'Usuário $value já existe. Por favor escolha outro nome!',
   })
   @MinLength(4)
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '#er%ˆdfgtee23' })
   @IsString()
   @MinLength(8)
   password: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'email@email.com' })
   @IsUserAlreadyExist({
     message: 'Email $value já existe. Por favor escolha outro email!',
   })
