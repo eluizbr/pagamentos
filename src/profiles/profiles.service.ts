@@ -22,9 +22,7 @@ export class ProfilesService {
     );
   }
 
-  async create(data: Prisma.ProfileCreateInput) {
-    const { userId }: any = data;
-
+  async create(data: Prisma.ProfileCreateInput, userId: string) {
     if (!userId) {
       throw new BadRequestException('Id do usuário obrigátorio!');
     }
@@ -42,7 +40,7 @@ export class ProfilesService {
         ...profile,
       });
 
-      return profile;
+      return { ...profile, userId };
     } catch (err) {
       this.sendToQueue('profileErrorLogs', {
         userId,
@@ -56,15 +54,15 @@ export class ProfilesService {
     }
   }
 
-  findAll(id: string) {
+  findAll(userId: string) {
     return this.prisma.profile.findMany({
-      where: { id },
+      where: { userId },
       include: { token: true },
     });
   }
 
-  async findOne(where: Prisma.ProfileWhereUniqueInput) {
-    const profile = await this.prisma.profile.findUnique({
+  async findOne(where: Prisma.ProfileWhereInput) {
+    const profile = await this.prisma.profile.findFirst({
       where,
       include: { user: { select: { id: true } }, token: true },
     });

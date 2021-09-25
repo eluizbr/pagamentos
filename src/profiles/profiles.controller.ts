@@ -30,6 +30,7 @@ import { ProfilesService } from './profiles.service';
 @ApiBearerAuth()
 @ApiTags('Profile')
 @Controller('profiles')
+@UseGuards(AuthGuard())
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
 
@@ -42,12 +43,11 @@ export class ProfilesController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiBody({ type: Profile })
   @ApiOperation({ summary: 'Create new user profile' })
-  async create(@Body() createProfileDto: CreateProfileDto) {
-    return await this.profilesService.create(createProfileDto);
+  async create(@Request() req, @Body() createProfileDto: CreateProfileDto) {
+    return await this.profilesService.create(createProfileDto, req.user.id);
   }
 
   @Get()
-  @UseGuards(AuthGuard())
   @ApiOkResponse({
     description: 'The user data',
     type: Profile,
@@ -56,8 +56,7 @@ export class ProfilesController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiOperation({ summary: 'Get all user profiles' })
   findAll(@Request() req) {
-    const { id } = req.user;
-    return this.profilesService.findAll(id);
+    return this.profilesService.findAll(req.user.id);
   }
 
   @Get(':id')
@@ -67,8 +66,8 @@ export class ProfilesController {
     type: Profile,
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  findOne(@Param('id') id: string) {
-    return this.profilesService.findOne({ id });
+  findOne(@Param('id') id: string, @Request() req) {
+    return this.profilesService.findOne({ id, userId: req.user.id });
   }
 
   @ApiOperation({ summary: 'Update user profile by ID' })

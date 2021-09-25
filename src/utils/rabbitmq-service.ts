@@ -25,7 +25,7 @@ export default class RabbitmqService {
       routingKey,
       Buffer.from(JSON.stringify(content)),
       {
-        persistent: true,
+        persistent: Boolean(process.env.RABBTIMQ_PERSISTENT_MSG),
       },
     );
   }

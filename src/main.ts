@@ -17,6 +17,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Pagamentos')
+    .setBasePath('/api')
     .setDescription('API de pagamentos')
     .setVersion('1.0')
     .addTag('pagamentos')

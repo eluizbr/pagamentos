@@ -59,11 +59,7 @@ export default class CreateProfileDto implements Prisma.ProfileCreateInput {
   })
   country?: string;
 
-  @IsString({
-    message:
-      'O campo USERID é obrigatório. Deve ser um ID de um usuário vávlido.',
-  })
-  userId: string;
+  userId?: string;
 
   token?: Prisma.TokenCreateNestedManyWithoutProfileInput;
 }
