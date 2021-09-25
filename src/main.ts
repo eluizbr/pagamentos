@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -11,6 +12,9 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+
+  app.use(helmet());
+  app.enableCors();
 
   const config = new DocumentBuilder()
     .setTitle('Pagamentos')
