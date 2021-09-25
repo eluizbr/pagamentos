@@ -1,4 +1,3 @@
-import { Prisma } from '.prisma/client';
 import {
   Body,
   Controller,
@@ -19,8 +18,10 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import CreateProfileDto from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './entities/profile.entity';
+import { ProfileUpdate } from './entities/update-profile.entity';
 import { ProfilesService } from './profiles.service';
 
 @ApiBearerAuth()
@@ -38,7 +39,7 @@ export class ProfilesController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiBody({ type: Profile })
   @ApiOperation({ summary: 'Create new user profile' })
-  async create(@Body() createProfileDto: Prisma.ProfileCreateInput) {
+  async create(@Body() createProfileDto: CreateProfileDto) {
     return await this.profilesService.create(createProfileDto);
   }
 
@@ -68,8 +69,9 @@ export class ProfilesController {
   @ApiOperation({ summary: 'Update user profile by ID' })
   @ApiOkResponse({
     description: 'The user profile data',
-    type: Profile,
+    type: ProfileUpdate,
   })
+  @ApiBody({ type: ProfileUpdate })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @Patch(':id')

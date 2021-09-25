@@ -1,21 +1,8 @@
-import { DocumentType, UserType } from '.prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class Profile {
+export class ProfileUpdate {
   @ApiProperty({ example: 'José Silva' })
   name: string;
-
-  @ApiProperty({ example: 'jose.silva@email.com' })
-  email: string;
-
-  @ApiProperty({ example: '11122233344' })
-  document: string;
-
-  @ApiProperty({ enum: ['CPF', 'CNPG'] })
-  document_type: DocumentType;
-
-  @ApiProperty({ enum: ['PF', 'PJ'] })
-  user_type: UserType;
 
   @ApiProperty({ example: '31999999999' })
   phone: string;

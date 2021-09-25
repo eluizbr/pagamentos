@@ -1,5 +1,9 @@
 import { Prisma } from '.prisma/client';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { argon2id, hash as hashPassword } from 'argon2';
 import { PrismaService } from 'src/utils/prisma.service';
 import RabbitmqService from 'src/utils/rabbitmq-service';
@@ -59,13 +63,16 @@ export class UsersService {
 
       return user;
     } catch (err) {
-      // Error when try create user
-      this.sendToQueue('userErrorLogs', err);
+      this.sendToQueue('userErrorLogs', {
+        email,
+        username,
+        error: err.meta,
+      });
 
-      return {
-        code: err.code,
-        message: err.meta.cause,
-      };
+      throw new BadRequestException({
+        status: 404,
+        message: `O campo ${err.meta.target}, já esta em uso por outro usuário!`,
+      });
     }
   }
 

@@ -37,14 +37,14 @@ model User {
 }
 model Profile {
   user            User[]          @relation( fields: [userId], references: [id],onDelete: Cascade)
-  userId          String?         @db.VarChar(255)
+  userId          String          @db.VarChar(255)
   id              String          @id @default(uuid()) @db.VarChar(255)
   name            String          @db.VarChar(255)
   email           String          @unique @db.VarChar(255)
   document        String          @unique @db.VarChar(255)
   document_type   DocumentType 
   user_type       UserType
-  phone           Int
+  phone           String          @db.VarChar(100)
   street          String          @db.VarChar(255)
   street_number   String          @db.VarChar(255)
   complementary   String          @db.VarChar(255)
@@ -61,14 +61,14 @@ model Profile {
 }
 
 model Token {
-  profile         Profile[]   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId       String?      @db.VarChar(255)
-  id              String      @id @default(uuid()) @db.VarChar(255)
+  profile         Profile[]         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId       String?           @db.VarChar(255)
+  id              String            @id @default(uuid()) @db.VarChar(255)
   type            TokenType
-  token           String      @unique @default(cuid()) @db.VarChar(255)
-  client_id       String      @unique @default(cuid()) @db.VarChar(255)
-  is_active       Boolean     @default(true)
-  created_at      DateTime?   @default(now())
-  updated_at      DateTime?   @updatedAt
+  token           String            @unique @default(cuid()) @db.VarChar(255)
+  client_id       String            @unique @default(cuid()) @db.VarChar(255)
+  is_active       Boolean           @default(true)
+  created_at      DateTime?         @default(now())
+  updated_at      DateTime?         @updatedAt
 
 }

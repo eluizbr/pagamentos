@@ -1,5 +1,9 @@
 import { Prisma } from '.prisma/client';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/utils/prisma.service';
 import RabbitmqService from 'src/utils/rabbitmq-service';
 
@@ -21,6 +25,10 @@ export class ProfilesService {
   async create(data: Prisma.ProfileCreateInput) {
     const { userId }: any = data;
 
+    if (!userId) {
+      throw new BadRequestException('Id do usuário obrigátorio!');
+    }
+
     try {
       const profile = await this.prisma.profile.create({
         data: {
@@ -36,23 +44,28 @@ export class ProfilesService {
 
       return profile;
     } catch (err) {
-      this.sendToQueue('profileErrorLogs', err);
+      this.sendToQueue('profileErrorLogs', {
+        userId,
+        error: err.meta,
+      });
 
-      return {
-        code: err.code,
-        message: err.meta,
-      };
+      throw new BadRequestException({
+        status: 404,
+        message: `O campo ${err.meta.target}, já esta em uso por outro usuário!`,
+      });
     }
   }
 
   findAll() {
-    return this.prisma.profile.findMany({ include: { token: true } });
+    return this.prisma.profile.findMany({
+      include: { token: true },
+    });
   }
 
   async findOne(where: Prisma.ProfileWhereUniqueInput) {
     const profile = await this.prisma.profile.findUnique({
       where,
-      include: { token: true },
+      include: { user: { select: { id: true } }, token: true },
     });
     if (!profile) {
       throw new NotFoundException(`Pofile id ${where}, não existe!`);
@@ -64,8 +77,18 @@ export class ProfilesService {
     where: Prisma.ProfileWhereUniqueInput,
     data: Prisma.ProfileUpdateInput,
   ) {
-    const perfil = await this.findOne(where);
-    return await this.prisma.profile.update({ where, data });
+    await this.findOne(where);
+
+    const perfil = await this.prisma.profile.update({ where, data });
+
+    this.sendToQueue('profileUpdateLogs', {
+      type: 'updateProfile',
+      id: perfil.id,
+      update: perfil.updated_at,
+      fields: Object.keys(data),
+    });
+
+    return perfil;
   }
 
   async remove(where: Prisma.ProfileWhereUniqueInput) {

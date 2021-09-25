@@ -1,9 +1,9 @@
 import { DocumentType, Prisma, UserType } from '@prisma/client';
-import { IsEmail, IsNumber, IsString, Length } from 'class-validator';
+import { IsEmail, IsString, Length } from 'class-validator';
 import { IsCpfCnpjValid } from 'src/utils/IsCpfCnpjValid.service';
 import { IsProfileAlreadyExist } from 'src/utils/IsProfileAlreadyExist.service';
 
-export class CreateProfileDto {
+export default class CreateProfileDto implements Prisma.ProfileCreateInput {
   @IsString()
   name: string;
 
@@ -23,8 +23,11 @@ export class CreateProfileDto {
   @IsString()
   user_type: UserType;
 
-  @IsNumber()
-  phone: number;
+  @IsString()
+  @Length(11, 20, {
+    message: 'O Telefone deve conter no mínimo 11 caracteres',
+  })
+  phone: string;
 
   @IsString()
   street: string;
@@ -56,8 +59,11 @@ export class CreateProfileDto {
   })
   country?: string;
 
-  @IsString()
-  user: string;
+  @IsString({
+    message:
+      'O campo USERID é obrigatório. Deve ser um ID de um usuário vávlido.',
+  })
+  userId: string;
 
   token?: Prisma.TokenCreateNestedManyWithoutProfileInput;
 }

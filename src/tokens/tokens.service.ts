@@ -1,16 +1,28 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/utils/prisma.service';
+import RabbitmqService from 'src/utils/rabbitmq-service';
 import { CreateTokenDto } from './dto/create-token.dto';
 import { UpdateTokenDto } from './dto/update-token.dto';
 
 @Injectable()
 export class TokensService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly rabbitmq: RabbitmqService,
+  ) {}
+
+  sendToQueue(routingKey: string, data: any) {
+    this.rabbitmq.publishInExchange(
+      process.env.RABBTIMQ_TOKEN_EXCHANGE,
+      routingKey,
+      data,
+    );
+  }
 
   async create(createTokenDto: CreateTokenDto) {
     const profile: any = createTokenDto.profileId;
     try {
-      return await this.prisma.token.create({
+      const token = await this.prisma.token.create({
         data: {
           ...createTokenDto,
           profile: {
@@ -18,7 +30,15 @@ export class TokensService {
           },
         },
       });
+
+      this.sendToQueue('tokenCreateLogs', {
+        type: 'createToken',
+        ...token,
+      });
+
+      return token;
     } catch (err) {
+      this.sendToQueue('tokenErrorLogs', err);
       return {
         code: err.code,
         message: err.meta.cause,
@@ -39,15 +59,32 @@ export class TokensService {
   }
 
   async update(id: string, updateTokenDto: UpdateTokenDto) {
-    const token = await this.findOne(id);
-    return this.prisma.token.update({
+    await this.findOne(id);
+    const token = await this.prisma.token.update({
       where: { id },
       data: UpdateTokenDto,
     });
+
+    this.sendToQueue('tokenUpdateLogs', {
+      type: 'tokenUpdate',
+      id: token.id,
+      update: token.updated_at,
+      fields: Object.keys(updateTokenDto),
+    });
+
+    return token;
   }
 
   async remove(id: string) {
-    const token = await this.findOne(id);
-    return await this.prisma.token.delete({ where: { id } });
+    await this.findOne(id);
+    const token = await this.prisma.token.delete({ where: { id } });
+
+    this.sendToQueue('tokenRemoveLogs', {
+      type: 'removeToken',
+      id: token.id,
+      update: token.updated_at,
+    });
+
+    return token;
   }
 }
