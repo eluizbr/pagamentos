@@ -56,8 +56,9 @@ export class ProfilesService {
     }
   }
 
-  findAll() {
+  findAll(id: string) {
     return this.prisma.profile.findMany({
+      where: { id },
       include: { token: true },
     });
   }

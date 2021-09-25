@@ -6,7 +6,10 @@ import {
   Param,
   Patch,
   Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -43,6 +46,8 @@ export class ProfilesController {
     return await this.profilesService.create(createProfileDto);
   }
 
+  @Get()
+  @UseGuards(AuthGuard())
   @ApiOkResponse({
     description: 'The user data',
     type: Profile,
@@ -50,9 +55,9 @@ export class ProfilesController {
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiOperation({ summary: 'Get all user profiles' })
-  @Get()
-  findAll() {
-    return this.profilesService.findAll();
+  findAll(@Request() req) {
+    const { id } = req.user;
+    return this.profilesService.findAll(id);
   }
 
   @Get(':id')
