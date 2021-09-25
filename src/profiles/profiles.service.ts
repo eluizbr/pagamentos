@@ -1,27 +1,46 @@
 import { Prisma } from '.prisma/client';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/utils/prisma.service';
+import RabbitmqService from 'src/utils/rabbitmq-service';
 
 @Injectable()
 export class ProfilesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly rabbitmq: RabbitmqService,
+  ) {}
+
+  sendToQueue(routingKey: string, data: any) {
+    this.rabbitmq.publishInExchange(
+      process.env.RABBTIMQ_PROFILE_EXCHANGE,
+      routingKey,
+      data,
+    );
+  }
 
   async create(data: Prisma.ProfileCreateInput) {
-    const { user }: any = data;
+    const { userId }: any = data;
 
     try {
-      return await this.prisma.profile.create({
+      const profile = await this.prisma.profile.create({
         data: {
           ...data,
-          user: {
-            connect: { id: user },
-          },
+          user: { connect: { id: userId } },
         },
       });
+
+      this.sendToQueue('profileCreateLogs', {
+        type: 'profileCreate',
+        ...profile,
+      });
+
+      return profile;
     } catch (err) {
+      this.sendToQueue('profileErrorLogs', err);
+
       return {
         code: err.code,
-        message: err.meta.cause,
+        message: err.meta,
       };
     }
   }

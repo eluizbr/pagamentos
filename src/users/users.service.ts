@@ -10,6 +10,10 @@ const select = {
   email: true,
   created_at: true,
   updated_at: true,
+  profiles: {
+    select: { id: true },
+  },
+  _count: true,
 };
 
 @Injectable()
@@ -70,7 +74,7 @@ export class UsersService {
   }
 
   async findOne(where: Prisma.UserWhereUniqueInput) {
-    const user = await this.prisma.user.findUnique({
+    const user = this.prisma.user.findUnique({
       where,
       select,
     });
