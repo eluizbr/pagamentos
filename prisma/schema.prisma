@@ -25,6 +25,12 @@ enum TokenType {
   production
 }
 
+enum MecrchantStatus {
+  active
+  deleted
+  pending
+}
+
 model User {
   id            String      @id @default(uuid()) @db.VarChar(255)
   username      String      @unique @db.VarChar(255)
@@ -35,9 +41,8 @@ model User {
   profiles       Profile[]
 
 }
+
 model Profile {
-  user            User[]          @relation( fields: [userId], references: [id],onDelete: Cascade)
-  userId          String?         @db.VarChar(255)
   id              String          @id @default(uuid()) @db.VarChar(255)
   name            String          @db.VarChar(255)
   email           String          @unique @db.VarChar(255)
@@ -55,7 +60,10 @@ model Profile {
   country         String          @default("BR")   @db.VarChar(255)
   created_at      DateTime?       @default(now())
   updated_at      DateTime?       @updatedAt
-  token Token[]
+  merchant        Merchants[]  
+  user            User[]          @relation( fields: [userId], references: [id],onDelete: Cascade)
+  userId          String?         @db.VarChar(255)
+  token           Token[]
 
   @@index([name, userId])
 }
@@ -73,4 +81,35 @@ model Token {
   expires_in      DateTime?         @updatedAt
 
  @@index([profileId])
+}
+
+model Merchants {
+  id              String            @id @default(uuid()) @db.VarChar(255)
+  mcc             String            @db.VarChar(100)
+  status          MecrchantStatus   @default(pending)
+  created_at      DateTime?         @default(now())
+  updated_at      DateTime?         @updatedAt
+  profile         Profile           @relation( fields: [prodileId], references: [id],onDelete: Cascade)
+  prodileId       String            @db.VarChar(255)
+  provider        Providers[]
+
+  @@index([prodileId, status, mcc])
+}
+
+enum ProvidersName {
+  CIELO
+  PAGARME
+  PAGSEGURO
+}
+
+model Providers {
+  id              String            @id @default(uuid()) @db.VarChar(255)
+  name            ProvidersName
+  credentials     Json              @db.Json
+  priority        Int               @default(0)
+  created_at      DateTime?         @default(now())
+  updated_at      DateTime?         @updatedAt  
+  merchantId      String?           @db.VarChar(255)
+  merchant        Merchants[]       @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
 }

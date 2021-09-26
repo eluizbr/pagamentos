@@ -43,9 +43,4 @@ export class Profile {
 
   @ApiProperty({ example: 'BR' })
   country?: string;
-
-  @ApiProperty({
-    example: 'f6f23149-435c-4983-9553-8d957c5f047f',
-  })
-  user: string;
 }
