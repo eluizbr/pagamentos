@@ -57,7 +57,7 @@ model Profile {
   updated_at      DateTime?       @updatedAt
   token Token[]
 
-  @@index([name])
+  @@index([name, userId])
 }
 
 model Token {
@@ -65,10 +65,12 @@ model Token {
   profileId       String?           @db.VarChar(255)
   id              String            @id @default(uuid()) @db.VarChar(255)
   type            TokenType
-  token           String            @unique @default(cuid()) @db.VarChar(255)
+  token           String?           @unique @db.VarChar(255)
   client_id       String            @unique @default(cuid()) @db.VarChar(255)
   is_active       Boolean           @default(true)
   created_at      DateTime?         @default(now())
   updated_at      DateTime?         @updatedAt
+  expires_in      DateTime?         @updatedAt
 
+ @@index([profileId])
 }

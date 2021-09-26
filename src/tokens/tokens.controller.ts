@@ -6,7 +6,10 @@ import {
   Param,
   Patch,
   Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -28,6 +31,7 @@ import { TokensService } from './tokens.service';
 @ApiBearerAuth()
 @ApiTags('Tokens')
 @Controller('tokens')
+@UseGuards(AuthGuard())
 export class TokensController {
   constructor(private readonly tokensService: TokensService) {}
 
@@ -40,8 +44,8 @@ export class TokensController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiBody({ type: Token })
   @ApiOperation({ summary: 'Cria um novo token pata o perfil' })
-  create(@Body() createTokenDto: CreateTokenDto) {
-    return this.tokensService.create(createTokenDto);
+  create(@Body() createTokenDto: CreateTokenDto, @Request() req) {
+    return this.tokensService.create(createTokenDto, req.user.id);
   }
 
   @Get()

@@ -23,7 +23,6 @@ export class ProfilesService {
   }
 
   async create(data: Prisma.ProfileCreateInput, userId: string) {
-    console.log(data, userId);
     if (!userId) {
       throw new BadRequestException('Id do usuário obrigátorio!');
     }

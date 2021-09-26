@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ProfilesService } from 'src/profiles/profiles.service';
 import { PrismaService } from 'src/utils/prisma.service';
 import RabbitmqService from 'src/utils/rabbitmq-service';
 import { CreateTokenDto } from './dto/create-token.dto';
@@ -9,6 +11,8 @@ export class TokensService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly rabbitmq: RabbitmqService,
+    private readonly profileService: ProfilesService,
+    private readonly jwtService: JwtService,
   ) {}
 
   sendToQueue(routingKey: string, data: any) {
@@ -19,29 +23,48 @@ export class TokensService {
     );
   }
 
-  async create(createTokenDto: CreateTokenDto) {
-    const profile: any = createTokenDto.profileId;
+  async generateToken(userId: any, type: string) {
+    const result = { sub: userId, type };
+    const token = await this.jwtService.signAsync(result, {
+      expiresIn: '365d',
+    });
+    const decode = this.jwtService.decode(token);
+
+    return {
+      token,
+      decode,
+    };
+  }
+
+  async create(createTokenDto: CreateTokenDto, userId: string) {
+    const profile = await this.profileService.findOne({ userId });
+    const { type } = createTokenDto;
+    const { token, decode }: any = await this.generateToken(userId, type);
+
     try {
-      const token = await this.prisma.token.create({
+      const newToken = await this.prisma.token.create({
         data: {
           ...createTokenDto,
+          profileId: profile.id,
+          token,
+          expires_in: new Date(decode.exp * 1000),
           profile: {
-            connect: { id: profile },
+            connect: { id: profile.id },
           },
         },
       });
 
       this.sendToQueue('tokenCreateLogs', {
         type: 'createToken',
-        ...token,
+        ...newToken,
       });
 
-      return token;
+      return newToken;
     } catch (err) {
       this.sendToQueue('tokenErrorLogs', err);
+      console.log(err);
       return {
-        code: err.code,
-        message: err.meta.cause,
+        ...err,
       };
     }
   }
