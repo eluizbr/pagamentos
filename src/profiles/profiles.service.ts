@@ -23,6 +23,7 @@ export class ProfilesService {
   }
 
   async create(data: Prisma.ProfileCreateInput, userId: string) {
+    console.log(data, userId);
     if (!userId) {
       throw new BadRequestException('Id do usuário obrigátorio!');
     }
@@ -31,6 +32,7 @@ export class ProfilesService {
       const profile = await this.prisma.profile.create({
         data: {
           ...data,
+          userId,
           user: { connect: { id: userId } },
         },
       });
@@ -40,7 +42,7 @@ export class ProfilesService {
         ...profile,
       });
 
-      return { ...profile, userId };
+      return profile;
     } catch (err) {
       this.sendToQueue('profileErrorLogs', {
         userId,
@@ -54,9 +56,9 @@ export class ProfilesService {
     }
   }
 
-  findAll(userId: string) {
+  findAll(where: any) {
     return this.prisma.profile.findMany({
-      where: { userId },
+      where,
       include: { token: true },
     });
   }
@@ -67,31 +69,47 @@ export class ProfilesService {
       include: { user: { select: { id: true } }, token: true },
     });
     if (!profile) {
-      throw new NotFoundException(`Pofile id ${where}, não existe!`);
+      throw new NotFoundException(`Pofile id ${where.id}, não existe!`);
     }
     return profile;
   }
 
-  async update(
-    where: Prisma.ProfileWhereUniqueInput,
-    data: Prisma.ProfileUpdateInput,
-  ) {
+  async update(where: any, data: Prisma.ProfileUpdateInput) {
     await this.findOne(where);
 
-    const perfil = await this.prisma.profile.update({ where, data });
+    const { id } = where;
+    const profile = await this.prisma.profile.update({
+      where: { id },
+      data,
+    });
 
     this.sendToQueue('profileUpdateLogs', {
       type: 'updateProfile',
-      id: perfil.id,
-      update: perfil.updated_at,
+      id: profile.id,
+      update: profile.updated_at,
       fields: Object.keys(data),
     });
 
-    return perfil;
+    return profile;
   }
 
-  async remove(where: Prisma.ProfileWhereUniqueInput) {
+  async remove(where: any) {
     await this.findOne(where);
-    return this.prisma.profile.delete({ where });
+    const { id, userId } = where;
+
+    try {
+      await this.prisma.profile.delete({ where: { id } });
+      return;
+    } catch (err) {
+      this.sendToQueue('profileRemoveLogs', {
+        userId,
+        error: err.meta,
+      });
+
+      throw new BadRequestException({
+        status: 404,
+        message: `Erro ao tentar remover o perfil ${id}`,
+      });
+    }
   }
 }

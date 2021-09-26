@@ -56,7 +56,7 @@ export class ProfilesController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiOperation({ summary: 'Get all user profiles' })
   findAll(@Request() req) {
-    return this.profilesService.findAll(req.user.id);
+    return this.profilesService.findAll({ userId: req.user.id });
   }
 
   @Get(':id')
@@ -79,8 +79,15 @@ export class ProfilesController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @Patch(':id')
-  update(@Param('id') id: any, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profilesService.update({ id }, updateProfileDto);
+  update(
+    @Param('id') id: any,
+    @Request() req,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ) {
+    return this.profilesService.update(
+      { id, userId: req.user.id },
+      updateProfileDto,
+    );
   }
 
   @ApiOperation({ summary: 'Delete user profile by ID' })
@@ -88,7 +95,7 @@ export class ProfilesController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiNotFoundResponse({ description: 'Profile Not found' })
   @Delete(':id')
-  remove(@Param('id') id: any) {
-    return this.profilesService.remove(id);
+  remove(@Param('id') id: any, @Request() req) {
+    return this.profilesService.remove({ id, userId: req.user.id });
   }
 }
