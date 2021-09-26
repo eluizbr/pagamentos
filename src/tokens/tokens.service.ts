@@ -69,11 +69,13 @@ export class TokensService {
     }
   }
 
-  findAll() {
-    return this.prisma.token.findMany();
+  async findAll(userId: string) {
+    const profile = await this.profileService.findOne({ userId });
+    return this.prisma.token.findMany({ where: { profileId: profile.id } });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, userId: string) {
+    await this.profileService.findOne({ userId });
     const token = await this.prisma.token.findUnique({ where: { id } });
     if (!token)
       throw new NotFoundException(`Token com o id ${id}, não existe!`);
@@ -81,8 +83,8 @@ export class TokensService {
     return token;
   }
 
-  async update(id: string, updateTokenDto: UpdateTokenDto) {
-    await this.findOne(id);
+  async update(id: string, userId: string, updateTokenDto: UpdateTokenDto) {
+    await this.findOne(id, userId);
     const token = await this.prisma.token.update({
       where: { id },
       data: UpdateTokenDto,
@@ -98,8 +100,8 @@ export class TokensService {
     return token;
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
+  async remove(id: string, userId: string) {
+    await this.findOne(id, userId);
     const token = await this.prisma.token.delete({ where: { id } });
 
     this.sendToQueue('tokenRemoveLogs', {
@@ -108,6 +110,6 @@ export class TokensService {
       update: token.updated_at,
     });
 
-    return token;
+    return;
   }
 }

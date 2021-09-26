@@ -55,8 +55,8 @@ export class TokensController {
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiOperation({ summary: 'Retorna todos os tokens do perfil' })
-  findAll() {
-    return this.tokensService.findAll();
+  findAll(@Request() req) {
+    return this.tokensService.findAll(req.user.id);
   }
 
   @Get(':id')
@@ -67,14 +67,18 @@ export class TokensController {
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  findOne(@Param('id') id: string) {
-    return this.tokensService.findOne(id);
+  findOne(@Param('id') id: string, @Request() req) {
+    return this.tokensService.findOne(id, req.user.id);
   }
 
   @Patch(':id')
   @ApiExcludeEndpoint()
-  update(@Param('id') id: string, @Body() updateTokenDto: UpdateTokenDto) {
-    return this.tokensService.update(id, updateTokenDto);
+  update(
+    @Param('id') id: string,
+    @Request() req,
+    @Body() updateTokenDto: UpdateTokenDto,
+  ) {
+    return this.tokensService.update(id, req.user.id, updateTokenDto);
   }
 
   @Delete(':id')
@@ -82,7 +86,7 @@ export class TokensController {
   @ApiOkResponse({ description: 'O token foi removido com sucesso' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiNotFoundResponse({ description: 'Token não encontrado' })
-  remove(@Param('id') id: string) {
-    return this.tokensService.remove(id);
+  remove(@Param('id') id: string, @Request() req) {
+    return this.tokensService.remove(id, req.user.id);
   }
 }
