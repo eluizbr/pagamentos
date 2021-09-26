@@ -21,8 +21,8 @@ enum UserType {
 }
 
 enum TokenType {
-  Developer
-  Production
+  developement
+  production
 }
 
 model User {

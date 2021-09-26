@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ProfilesService } from 'src/profiles/profiles.service';
 import { PrismaService } from 'src/utils/prisma.service';
@@ -62,10 +66,11 @@ export class TokensService {
       return newToken;
     } catch (err) {
       this.sendToQueue('tokenErrorLogs', err);
-      console.log(err);
-      return {
-        ...err,
-      };
+
+      throw new BadRequestException({
+        status: 400,
+        message: err.message,
+      });
     }
   }
 
