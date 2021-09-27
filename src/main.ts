@@ -23,6 +23,7 @@ async function bootstrap() {
     .addTag('pagamentos')
     .addBearerAuth()
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('doc', app, document);
 

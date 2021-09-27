@@ -32,84 +32,84 @@ enum MecrchantStatus {
 }
 
 model User {
-  id            String      @id @default(uuid()) @db.VarChar(255)
-  username      String      @unique @db.VarChar(255)
-  email         String      @unique @db.VarChar(255)
-  password      String      @db.VarChar(255)
-  created_at    DateTime?   @default(now())
-  updated_at    DateTime?   @updatedAt
-  profiles       Profile[]
+  id         String    @id @default(uuid()) @db.VarChar(255)
+  username   String    @unique @db.VarChar(255)
+  email      String    @unique @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+  profiles   Profile[]
 
 }
 
 model Profile {
-  id              String          @id @default(uuid()) @db.VarChar(255)
-  name            String          @db.VarChar(255)
-  email           String          @unique @db.VarChar(255)
-  document        String          @unique @db.VarChar(255)
-  document_type   DocumentType 
-  user_type       UserType
-  phone           String          @db.VarChar(100)
-  street          String          @db.VarChar(255)
-  street_number   String          @db.VarChar(255)
-  complementary   String          @db.VarChar(255)
-  neighborhood    String          @db.VarChar(255)
-  city            String          @db.VarChar(255)
-  state           String          @db.VarChar(255)
-  zipcode         String          @db.VarChar(8)
-  country         String          @default("BR")   @db.VarChar(255)
-  created_at      DateTime?       @default(now())
-  updated_at      DateTime?       @updatedAt
-  merchant        Merchants[]  
-  user            User[]          @relation( fields: [userId], references: [id],onDelete: Cascade)
-  userId          String?         @db.VarChar(255)
-  token           Token[]
+  id            String       @id @default(uuid()) @db.VarChar(255)
+  name          String       @db.VarChar(255)
+  email         String       @unique @db.VarChar(255)
+  document      String       @unique @db.VarChar(255)
+  document_type DocumentType
+  user_type     UserType
+  phone         String       @db.VarChar(100)
+  street        String       @db.VarChar(255)
+  street_number String       @db.VarChar(255)
+  complementary String       @db.VarChar(255)
+  neighborhood  String       @db.VarChar(255)
+  city          String       @db.VarChar(255)
+  state         String       @db.VarChar(255)
+  zipcode       String       @db.VarChar(8)
+  country       String       @default("BR") @db.VarChar(255)
+  created_at    DateTime?    @default(now())
+  updated_at    DateTime?    @updatedAt
+  merchant      Merchants[]
+  user          User[]       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String?      @db.VarChar(255)
+  token         Token[]
 
   @@index([name, userId])
 }
 
 model Token {
-  profile         Profile[]         @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId       String?           @db.VarChar(255)
-  id              String            @id @default(uuid()) @db.VarChar(255)
-  type            TokenType
-  token           String?           @unique @db.VarChar(255)
-  client_id       String            @unique @default(cuid()) @db.VarChar(255)
-  is_active       Boolean           @default(true)
-  created_at      DateTime?         @default(now())
-  updated_at      DateTime?         @updatedAt
-  expires_in      DateTime?         @updatedAt
+  profile    Profile[] @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId  String?   @db.VarChar(255)
+  id         String    @id @default(uuid()) @db.VarChar(255)
+  type       TokenType
+  token      String?   @unique @db.VarChar(255)
+  client_id  String    @unique @default(cuid()) @db.VarChar(255)
+  is_active  Boolean   @default(true)
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+  expires_in DateTime? @updatedAt
 
- @@index([profileId])
+  @@index([profileId])
 }
 
 model Merchants {
-  id              String            @id @default(uuid()) @db.VarChar(255)
-  mcc             String            @db.VarChar(100)
-  status          MecrchantStatus   @default(pending)
-  created_at      DateTime?         @default(now())
-  updated_at      DateTime?         @updatedAt
-  profile         Profile           @relation( fields: [prodileId], references: [id],onDelete: Cascade)
-  prodileId       String            @db.VarChar(255)
-  provider        Providers[]
+  id         String          @id @default(uuid()) @db.VarChar(255)
+  mcc        String          @db.VarChar(100)
+  status     MecrchantStatus @default(pending)
+  created_at DateTime?       @default(now())
+  updated_at DateTime?       @updatedAt
+  profile    Profile         @relation(fields: [prodileId], references: [id], onDelete: Cascade)
+  prodileId  String          @unique @db.VarChar(255)
+  provider   Providers[]
 
   @@index([prodileId, status, mcc])
 }
 
-enum ProvidersName {
-  CIELO
-  PAGARME
-  PAGSEGURO
+enum ProvidersEnum {
+  cielo
+  pagarme
+  pagseguro
 }
 
 model Providers {
-  id              String            @id @default(uuid()) @db.VarChar(255)
-  name            ProvidersName
-  credentials     Json              @db.Json
-  priority        Int               @default(0)
-  created_at      DateTime?         @default(now())
-  updated_at      DateTime?         @updatedAt  
-  merchantId      String?           @db.VarChar(255)
-  merchant        Merchants[]       @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  id          String        @id @default(uuid()) @db.VarChar(255)
+  name        ProvidersEnum
+  credentials Json          @db.Json
+  priority    Int           @default(0)
+  created_at  DateTime?     @default(now())
+  updated_at  DateTime?     @updatedAt
+  merchantId  String?       @db.VarChar(255)
+  merchant    Merchants[]   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
 }
