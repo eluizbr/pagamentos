@@ -38,7 +38,7 @@ export class MerchantsController {
   @Post()
   @ApiCreatedResponse({
     description: 'Cria uma novo merchant',
-    type: Merchant,
+    type: MerchantResult,
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
