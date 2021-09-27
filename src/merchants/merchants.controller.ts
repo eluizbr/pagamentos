@@ -25,6 +25,7 @@ import {
 import { CreateMerchantDto } from './dto/create-merchant.dto';
 import { UpdateMerchantDto } from './dto/update-merchant.dto';
 import { Merchant } from './entities/merchant.entity';
+import { MerchantResult } from './entities/merchant.result.entity';
 import { MerchantsService } from './merchants.service';
 
 @ApiBearerAuth()
@@ -41,7 +42,7 @@ export class MerchantsController {
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiBody({ type: Merchant })
+  @ApiBody({ type: MerchantResult })
   @ApiOperation({ summary: 'Cria uma novo merchant' })
   create(@Body() createMerchantDto: CreateMerchantDto, @Request() req) {
     return this.merchantsService.create(createMerchantDto, req.user);
@@ -50,7 +51,7 @@ export class MerchantsController {
   @Get()
   @ApiOkResponse({
     description: 'Retorna o merchant do usuário',
-    type: Merchant,
+    type: MerchantResult,
     isArray: true,
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
@@ -75,7 +76,7 @@ export class MerchantsController {
   @ApiOperation({ summary: 'Atualiza merchant do usuário pelo ID' })
   @ApiOkResponse({
     description: 'Retorna o merchant do usuário',
-    type: UpdateMerchantDto,
+    type: MerchantResult,
   })
   @ApiBody({ type: UpdateMerchantDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })

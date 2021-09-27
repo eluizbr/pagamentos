@@ -1,5 +1,4 @@
-import { MecrchantStatus } from '.prisma/client';
-import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
 class Providers {
@@ -46,20 +45,4 @@ export class Merchant {
   })
   @IsString()
   mcc: string;
-
-  @ApiProperty({ example: 'pending', enum: MecrchantStatus })
-  @IsString()
-  status?: MecrchantStatus;
-
-  @ApiProperty({
-    description: 'Provedores parceiros para sua conta',
-    type: 'array',
-    items: {
-      oneOf: [
-        { $ref: getSchemaPath(Pagarme) },
-        { $ref: getSchemaPath(Pagseguro) },
-      ],
-    },
-  })
-  providers?: CredentialsType[];
 }

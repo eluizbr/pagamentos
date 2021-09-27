@@ -22,11 +22,22 @@ export class MerchantsService {
     );
   }
 
-  create(data: Prisma.MerchantsCreateInput, user: any) {
+  async create(data: Prisma.MerchantsCreateInput, user: any) {
     const { id, profileId } = user;
-    console.log(user);
+
+    const merchant = await this.prisma.merchants.findFirst({
+      where: { userId: id },
+    });
+
+    if (merchant) {
+      throw new BadRequestException({
+        status: 400,
+        message: 'Profile já possuiu um merchant',
+      });
+    }
+
     try {
-      return this.prisma.merchants.create({
+      return await this.prisma.merchants.create({
         data: {
           ...data,
           userId: id,
@@ -34,6 +45,7 @@ export class MerchantsService {
         },
       });
     } catch (err) {
+      console.log('wewewe');
       throw new BadRequestException({
         status: 400,
         message: err.message,
