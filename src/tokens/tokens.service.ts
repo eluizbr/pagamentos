@@ -4,9 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from 'src/common/utils/prisma.service';
+import RabbitmqService from 'src/common/utils/rabbitmq-service';
 import { ProfilesService } from 'src/profiles/profiles.service';
-import { PrismaService } from 'src/utils/prisma.service';
-import RabbitmqService from 'src/utils/rabbitmq-service';
 import { CreateTokenDto } from './dto/create-token.dto';
 import { UpdateTokenDto } from './dto/update-token.dto';
 

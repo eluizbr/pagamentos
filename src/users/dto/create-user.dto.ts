@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, MinLength } from 'class-validator';
-import { IsUserAlreadyExist } from 'src/utils/IsUserAlreadyExist.service';
+import { IsUserAlreadyExist } from 'src/common/utils/IsUserAlreadyExist.service';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'joseSilva' })

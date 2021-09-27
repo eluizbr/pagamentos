@@ -5,8 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { argon2id, hash as hashPassword } from 'argon2';
-import { PrismaService } from 'src/utils/prisma.service';
-import RabbitmqService from 'src/utils/rabbitmq-service';
+import { PrismaService } from 'src/common/utils/prisma.service';
+import RabbitmqService from 'src/common/utils/rabbitmq-service';
 
 const select = {
   id: true,

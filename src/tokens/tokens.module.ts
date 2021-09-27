@@ -1,23 +1,12 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { AuthModule } from 'src/auth/auth.module';
+import { CommonModule } from 'src/common/common.module';
 import { ProfilesService } from 'src/profiles/profiles.service';
-import { PrismaService } from 'src/utils/prisma.service';
-import RabbitmqService from 'src/utils/rabbitmq-service';
 import { TokensController } from './tokens.controller';
 import { TokensService } from './tokens.service';
 
 @Module({
-  imports: [
-    AuthModule,
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: 3600 },
-    }),
-  ],
+  imports: [CommonModule],
   controllers: [TokensController],
-  providers: [TokensService, PrismaService, RabbitmqService, ProfilesService],
+  providers: [TokensService, ProfilesService],
 })
 export class TokensModule {}

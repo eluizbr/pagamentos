@@ -1,7 +1,7 @@
 import { DocumentType, Prisma, UserType } from '@prisma/client';
 import { IsEmail, IsString, Length } from 'class-validator';
-import { IsCpfCnpjValid } from 'src/utils/IsCpfCnpjValid.service';
-import { IsProfileAlreadyExist } from 'src/utils/IsProfileAlreadyExist.service';
+import { IsCpfCnpjValid } from 'src/common/utils/IsCpfCnpjValid.service';
+import { IsProfileAlreadyExist } from 'src/common/utils/IsProfileAlreadyExist.service';
 
 export default class CreateProfileDto implements Prisma.ProfileCreateInput {
   @IsString()

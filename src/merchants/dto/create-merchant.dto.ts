@@ -1,9 +1,6 @@
-import { MecrchantStatus, Prisma } from '.prisma/client';
+import { IsString } from 'class-validator';
 
 export class CreateMerchantDto {
+  @IsString({ message: 'MCC não enviado ou não válido' })
   mcc: string;
-  status?: MecrchantStatus;
-  userId: string;
-  profile: Prisma.ProfileCreateNestedOneWithoutMerchantInput;
-  provider?: Prisma.ProvidersCreateNestedManyWithoutMerchantInput;
 }

@@ -1,28 +1,90 @@
-import { Injectable } from '@nestjs/common';
-import { CreateMerchantDto } from './dto/create-merchant.dto';
-import { UpdateMerchantDto } from './dto/update-merchant.dto';
+import { Prisma } from '.prisma/client';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaService } from 'src/common/utils/prisma.service';
+import RabbitmqService from 'src/common/utils/rabbitmq-service';
 
 @Injectable()
 export class MerchantsService {
-  create(createMerchantDto: CreateMerchantDto, userId: string) {
-    return 'This action adds a new merchant';
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly rabbitmq: RabbitmqService,
+  ) {}
+
+  sendToQueue(routingKey: string, data: any) {
+    this.rabbitmq.publishInExchange(
+      process.env.RABBTIMQ_MERCHANT_EXCHANGE,
+      routingKey,
+      data,
+    );
+  }
+
+  create(data: Prisma.MerchantsCreateInput, user: any) {
+    const { id, profileId } = user;
+    console.log(user);
+    try {
+      return this.prisma.merchants.create({
+        data: {
+          ...data,
+          userId: id,
+          profile: { connect: { id: profileId } },
+        },
+      });
+    } catch (err) {
+      throw new BadRequestException({
+        status: 400,
+        message: err.message,
+      });
+    }
   }
 
   findAll(where: any) {
-    return `This action returns all merchants`;
+    return this.prisma.merchants.findMany({ where });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} merchant`;
+  async findOne(where: Prisma.MerchantsWhereInput) {
+    const merchant = await this.prisma.merchants.findFirst({ where });
+
+    if (!merchant) {
+      throw new NotFoundException(`Merchant id ${where.id}, não existe!`);
+    }
+
+    return merchant;
   }
 
-  update(where: any, updateMerchantDto: UpdateMerchantDto) {
+  async update(where: any, data: Prisma.MerchantsUpdateInput) {
     const { id, userId } = where;
-    return `This action updates a #${id} merchant`;
+    await this.findOne(where);
+
+    try {
+      const merchant = await this.prisma.merchants.update({
+        where: { id },
+        data,
+      });
+      return merchant;
+    } catch (err) {
+      throw new BadRequestException({
+        status: 400,
+        message: err.message,
+      });
+    }
   }
 
-  remove(where: any) {
+  async remove(where: any) {
     const { id, userId } = where;
-    return `This action removes a #${id} merchant`;
+    await this.findOne(where);
+
+    try {
+      await this.prisma.merchants.delete({ where: { id } });
+    } catch (err) {
+      throw new BadRequestException({
+        status: 400,
+        message: err.message,
+      });
+    }
+    return;
   }
 }

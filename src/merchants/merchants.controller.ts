@@ -1,3 +1,4 @@
+import { Prisma } from '.prisma/client';
 import {
   Body,
   Controller,
@@ -42,8 +43,8 @@ export class MerchantsController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiBody({ type: Merchant })
   @ApiOperation({ summary: 'Cria uma novo merchant' })
-  create(@Request() req, @Body() createMerchantDto: CreateMerchantDto) {
-    return this.merchantsService.create(createMerchantDto, req.user.id);
+  create(@Body() createMerchantDto: CreateMerchantDto, @Request() req) {
+    return this.merchantsService.create(createMerchantDto, req.user);
   }
 
   @Get()
@@ -55,7 +56,8 @@ export class MerchantsController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiOperation({ summary: 'Retorna o merchant do usuário' })
   findAll(@Request() req) {
-    return this.merchantsService.findAll({ userId: req.user.id });
+    const { id, profile } = req.user;
+    return this.merchantsService.findAll({ userId: id, profileId: profile });
   }
 
   // @Get(':id')
@@ -81,7 +83,7 @@ export class MerchantsController {
   update(
     @Request() req,
     @Param('id') id: string,
-    @Body() updateMerchantDto: UpdateMerchantDto,
+    @Body() updateMerchantDto: Prisma.MerchantsUpdateInput,
   ) {
     return this.merchantsService.update(
       { id, userId: req.user.id },

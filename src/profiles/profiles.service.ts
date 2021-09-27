@@ -4,8 +4,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/utils/prisma.service';
-import RabbitmqService from 'src/utils/rabbitmq-service';
+import { PrismaService } from 'src/common/utils/prisma.service';
+import RabbitmqService from 'src/common/utils/rabbitmq-service';
 
 @Injectable()
 export class ProfilesService {
@@ -58,7 +58,7 @@ export class ProfilesService {
   findAll(where: any) {
     return this.prisma.profile.findMany({
       where,
-      include: { token: true },
+      include: { token: true, merchant: true },
     });
   }
 
