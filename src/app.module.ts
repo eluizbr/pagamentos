@@ -8,10 +8,10 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     AuthModule,
-    MerchantsModule,
-    ProfilesModule,
     UsersModule,
+    ProfilesModule,
     TokensModule,
+    MerchantsModule,
   ],
   controllers: [],
   providers: [],

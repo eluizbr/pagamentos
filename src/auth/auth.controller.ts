@@ -5,6 +5,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiProperty,
+  ApiTags,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 
@@ -19,7 +20,7 @@ class AuthToken {
   @ApiProperty({ example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' })
   token: string;
 }
-
+@ApiTags('Auth')
 @Controller()
 export class AuthController {
   constructor(private authservice: AuthService) {}

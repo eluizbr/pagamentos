@@ -42,7 +42,7 @@ export class MerchantsController {
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiBody({ type: MerchantResult })
+  @ApiBody({ type: Merchant })
   @ApiOperation({ summary: 'Cria uma novo merchant' })
   create(@Body() createMerchantDto: CreateMerchantDto, @Request() req) {
     return this.merchantsService.create(createMerchantDto, req.user);

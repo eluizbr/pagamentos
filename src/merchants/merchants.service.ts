@@ -22,11 +22,14 @@ export class MerchantsService {
     );
   }
 
-  async create(data: Prisma.MerchantsCreateInput, user: any) {
-    const { id, profileId } = user;
+  async create(data: any, user: any) {
+    const { id } = user;
+    const { profileId } = data;
+
+    delete data.profileId;
 
     const merchant = await this.prisma.merchants.findFirst({
-      where: { userId: id },
+      where: { profileId },
     });
 
     if (merchant) {
@@ -45,7 +48,6 @@ export class MerchantsService {
         },
       });
     } catch (err) {
-      console.log('wewewe');
       throw new BadRequestException({
         status: 400,
         message: err.message,

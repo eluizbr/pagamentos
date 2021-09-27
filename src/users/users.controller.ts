@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -23,8 +25,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
-@ApiBearerAuth()
 @ApiTags('User')
+@ApiBearerAuth()
+@UseGuards(AuthGuard())
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

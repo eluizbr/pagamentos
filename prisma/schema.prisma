@@ -90,8 +90,8 @@ model Merchants {
   created_at DateTime?       @default(now())
   updated_at DateTime?       @updatedAt
   profile    Profile?        @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId  String?         @unique @db.VarChar(255)
-  userId     String?         @unique @db.VarChar(255)
+  profileId  String          @unique @db.VarChar(255)
+  userId     String?         @db.VarChar(255)
   provider   Providers[]
 
   @@index([profileId, status, mcc])

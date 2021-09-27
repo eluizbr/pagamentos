@@ -1,43 +1,6 @@
-import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
-class Providers {
-  @ApiProperty({ example: 'pagseguro' })
-  @IsString()
-  name: string;
-
-  @ApiProperty({ example: 1 })
-  @IsNumber()
-  priority: number;
-}
-
-class Pagarme extends Providers {
-  @ApiProperty({ example: 'pagarme' })
-  @IsString()
-  type: String;
-
-  @ApiProperty({ example: '5757vvmsd#223' })
-  @IsString()
-  apykey: String;
-}
-
-class Pagseguro extends Providers {
-  @ApiProperty({ example: 'pagseguro' })
-  @IsString()
-  type: String;
-
-  @ApiProperty({ example: '5757vvmsd#223' })
-  @IsString()
-  token: String;
-
-  @ApiProperty({ example: 'email@email.com' })
-  @IsString()
-  email: String;
-}
-
-type CredentialsType = Pagarme | Pagseguro;
-
-@ApiExtraModels(Pagarme, Pagseguro)
 export class Merchant {
   @ApiProperty({
     description: 'codigo mcc do cadatro do lojista no adquirente',
@@ -45,4 +8,11 @@ export class Merchant {
   })
   @IsString()
   mcc: string;
+
+  @ApiProperty({
+    description: 'Id do profile',
+    example: '9b1ee4d9-dde0-4474-91ff-828e15c04e66',
+  })
+  @IsString()
+  profileId: string;
 }
