@@ -4,11 +4,11 @@ import { UpdateMerchantDto } from './dto/update-merchant.dto';
 
 @Injectable()
 export class MerchantsService {
-  create(createMerchantDto: CreateMerchantDto) {
+  create(createMerchantDto: CreateMerchantDto, userId: string) {
     return 'This action adds a new merchant';
   }
 
-  findAll() {
+  findAll(where: any) {
     return `This action returns all merchants`;
   }
 
@@ -16,11 +16,13 @@ export class MerchantsService {
     return `This action returns a #${id} merchant`;
   }
 
-  update(id: number, updateMerchantDto: UpdateMerchantDto) {
+  update(where: any, updateMerchantDto: UpdateMerchantDto) {
+    const { id, userId } = where;
     return `This action updates a #${id} merchant`;
   }
 
-  remove(id: number) {
+  remove(where: any) {
+    const { id, userId } = where;
     return `This action removes a #${id} merchant`;
   }
 }

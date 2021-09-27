@@ -89,11 +89,12 @@ model Merchants {
   status     MecrchantStatus @default(pending)
   created_at DateTime?       @default(now())
   updated_at DateTime?       @updatedAt
-  profile    Profile         @relation(fields: [prodileId], references: [id], onDelete: Cascade)
-  prodileId  String          @unique @db.VarChar(255)
+  profile    Profile         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId  String          @unique @db.VarChar(255)
+  userId     String          @unique @db.VarChar(255)
   provider   Providers[]
 
-  @@index([prodileId, status, mcc])
+  @@index([profileId, status, mcc])
 }
 
 enum ProvidersEnum {

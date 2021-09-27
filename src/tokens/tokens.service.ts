@@ -40,20 +40,20 @@ export class TokensService {
     };
   }
 
-  async create(createTokenDto: CreateTokenDto, userId: string) {
-    const profile = await this.profileService.findOne({ userId });
+  async create(createTokenDto: CreateTokenDto, user: any) {
+    const { id, profileId } = user;
     const { type } = createTokenDto;
-    const { token, decode }: any = await this.generateToken(userId, type);
+    const { token, decode }: any = await this.generateToken(id, type);
 
     try {
       const newToken = await this.prisma.token.create({
         data: {
           ...createTokenDto,
-          profileId: profile.id,
+          profileId,
           token,
           expires_in: new Date(decode.exp * 1000),
           profile: {
-            connect: { id: profile.id },
+            connect: { id: profileId },
           },
         },
       });
@@ -74,13 +74,18 @@ export class TokensService {
     }
   }
 
-  async findAll(userId: string) {
-    const profile = await this.profileService.findOne({ userId });
-    return this.prisma.token.findMany({ where: { profileId: profile.id } });
+  async findAll(user: any) {
+    const { id, profileId } = user;
+    return this.prisma.token.findMany({ where: { profileId } });
   }
 
-  async findOne(id: string, userId: string) {
-    await this.profileService.findOne({ userId });
+  async findOne(id: string, user: any) {
+    const { profileId } = user;
+
+    if (!profileId) {
+      throw new NotFoundException(`Profile não enviado!`);
+    }
+
     const token = await this.prisma.token.findUnique({ where: { id } });
     if (!token)
       throw new NotFoundException(`Token com o id ${id}, não existe!`);
@@ -105,8 +110,8 @@ export class TokensService {
     return token;
   }
 
-  async remove(id: string, userId: string) {
-    await this.findOne(id, userId);
+  async remove(id: string, user: any) {
+    await this.findOne(id, user);
     const token = await this.prisma.token.delete({ where: { id } });
 
     this.sendToQueue('tokenRemoveLogs', {

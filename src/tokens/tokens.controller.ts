@@ -45,7 +45,7 @@ export class TokensController {
   @ApiBody({ type: Token })
   @ApiOperation({ summary: 'Cria um novo token pata o perfil' })
   create(@Body() createTokenDto: CreateTokenDto, @Request() req) {
-    return this.tokensService.create(createTokenDto, req.user.id);
+    return this.tokensService.create(createTokenDto, req.user);
   }
 
   @Get()
@@ -68,7 +68,7 @@ export class TokensController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   findOne(@Param('id') id: string, @Request() req) {
-    return this.tokensService.findOne(id, req.user.id);
+    return this.tokensService.findOne(id, req.user);
   }
 
   @Patch(':id')
@@ -87,6 +87,6 @@ export class TokensController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiNotFoundResponse({ description: 'Token não encontrado' })
   remove(@Param('id') id: string, @Request() req) {
-    return this.tokensService.remove(id, req.user.id);
+    return this.tokensService.remove(id, req.user);
   }
 }
