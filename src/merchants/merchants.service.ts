@@ -33,11 +33,21 @@ export class MerchantsService {
     });
 
     if (merchant) {
+      this.sendToQueue('merchantErrorLogs', {
+        id,
+        error: 'Profile já possuiu um merchant',
+      });
+
       throw new BadRequestException({
         status: 400,
         message: 'Profile já possuiu um merchant',
       });
     }
+
+    this.sendToQueue('merchantCreateLogs', {
+      type: 'merchantCreate',
+      ...merchant,
+    });
 
     try {
       return await this.prisma.merchants.create({
@@ -48,6 +58,10 @@ export class MerchantsService {
         },
       });
     } catch (err) {
+      this.sendToQueue('merchantErrorLogs', {
+        id,
+        error: err.message,
+      });
       throw new BadRequestException({
         status: 400,
         message: err.message,
@@ -78,8 +92,19 @@ export class MerchantsService {
         where: { id },
         data,
       });
+
+      this.sendToQueue('merchantUpdateLogs', {
+        type: 'updateMerchant',
+        id: merchant.id,
+        update: merchant.updated_at,
+        fields: Object.keys(data),
+      });
       return merchant;
     } catch (err) {
+      this.sendToQueue('merchantErrorLogs', {
+        id,
+        error: err.message,
+      });
       throw new BadRequestException({
         status: 400,
         message: err.message,
@@ -94,6 +119,11 @@ export class MerchantsService {
     try {
       await this.prisma.merchants.delete({ where: { id } });
     } catch (err) {
+      this.sendToQueue('merchantErrorLogs', {
+        id,
+        error: err.message,
+      });
+
       throw new BadRequestException({
         status: 400,
         message: err.message,
