@@ -22,8 +22,8 @@ export class MerchantsService {
     );
   }
 
-  async create(data: any, user: any) {
-    const { id } = user;
+  async create(data: any, request: any) {
+    const { id } = request;
     const { profileId } = data;
 
     delete data.profileId;

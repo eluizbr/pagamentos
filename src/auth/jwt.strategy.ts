@@ -4,6 +4,16 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from 'src/common/utils/prisma.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
+export class UserToken {
+  id: string;
+  username: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+  profileId: string;
+  password: string | null;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private prisma: PrismaService) {
@@ -29,6 +39,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     delete user.password;
     user.profileId = profile.id;
-    return user;
+
+    const userToken: UserToken = {
+      ...user,
+      profileId: profile.id,
+      password: null,
+    };
+
+    return userToken;
   }
 }

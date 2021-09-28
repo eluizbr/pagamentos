@@ -1,8 +1,12 @@
 import { Prisma } from '.prisma/client';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { UserToken } from 'src/auth/jwt.strategy';
 import { PrismaService } from 'src/common/utils/prisma.service';
 import RabbitmqService from 'src/common/utils/rabbitmq-service';
-import { UpdateProviderDto } from './dto/update-provider.dto';
 
 @Injectable()
 export class ProvidersService {
@@ -19,15 +23,15 @@ export class ProvidersService {
     );
   }
 
-  async create(data: Prisma.ProvidersCreateInput, user: any) {
-    const { id, profile } = user;
+  async create(data: Prisma.ProvidersCreateInput, request: any) {
+    const { id, profileId } = request;
     const { merchantId } = data;
 
     try {
       const provider = await this.prisma.providers.create({
         data: {
           ...data,
-          profileId: profile,
+          profileId,
           userId: id,
           merchant: {
             connect: { id: merchantId },
@@ -46,18 +50,41 @@ export class ProvidersService {
     }
   }
 
-  findAll(user: any) {
-    const { id, profile } = user;
+  findAll(user: UserToken) {
+    const { id, profileId } = user;
     return this.prisma.providers.findMany({
-      where: { userId: id, profileId: profile },
+      where: { userId: id, profileId: profileId },
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} provider`;
+  findOne(id: string, user: UserToken) {
+    const provider = this.prisma.providers.findFirst({
+      where: { id, userId: user.id, profileId: user.profileId },
+    });
+    if (!provider) {
+      throw new NotFoundException(`Provider id ${id}, não existe!`);
+    }
+
+    return provider;
   }
 
-  update(id: number, updateProviderDto: UpdateProviderDto) {
+  async update(id: string, data: Prisma.ProvidersUpdateInput, user: UserToken) {
+    await this.findOne(id, user);
+
+    try {
+      const provider = await this.prisma.providers.update({
+        where: { id },
+        data,
+      });
+
+      return provider;
+    } catch (err) {
+      throw new BadRequestException({
+        status: 400,
+        message: err.message,
+      });
+    }
+
     return `This action updates a #${id} provider`;
   }
 

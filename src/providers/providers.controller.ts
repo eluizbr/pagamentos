@@ -24,6 +24,7 @@ import {
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { UpdateProviderDto } from './dto/update-provider.dto';
 import { Provider } from './entities/provider.entity';
+import { ProviderResult } from './entities/provider.result.entity';
 import { ProvidersService } from './providers.service';
 
 @ApiBearerAuth()
@@ -65,15 +66,15 @@ export class ProvidersController {
     type: Provider,
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  findOne(@Param('id') id: string) {
-    return this.providersService.findOne(+id);
+  findOne(@Param('id') id: string, @Request() req) {
+    return this.providersService.findOne(id, req.user);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Atualiza o provider pelo ID' })
   @ApiOkResponse({
     description: 'Dados do provider',
-    type: Provider,
+    type: ProviderResult,
   })
   @ApiBody({ type: Provider })
   @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -81,8 +82,9 @@ export class ProvidersController {
   update(
     @Param('id') id: string,
     @Body() updateProviderDto: UpdateProviderDto,
+    @Request() req,
   ) {
-    return this.providersService.update(+id, updateProviderDto);
+    return this.providersService.update(id, updateProviderDto, req.user);
   }
 
   @Delete(':id')
