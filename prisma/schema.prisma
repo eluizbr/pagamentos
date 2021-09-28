@@ -36,8 +36,8 @@ model User {
   username   String    @unique @db.VarChar(255)
   email      String    @unique @db.VarChar(255)
   password   String    @db.VarChar(255)
-  created_at DateTime? @default(now())
-  updated_at DateTime? @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   profiles   Profile[]
 
 }
@@ -58,8 +58,8 @@ model Profile {
   state         String       @db.VarChar(255)
   zipcode       String       @db.VarChar(8)
   country       String       @default("BR") @db.VarChar(255)
-  created_at    DateTime?    @default(now())
-  updated_at    DateTime?    @updatedAt
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
   merchant      Merchants[]
   user          User[]       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String?      @db.VarChar(255)
@@ -76,9 +76,9 @@ model Token {
   token      String?   @unique @db.VarChar(255)
   client_id  String    @unique @default(cuid()) @db.VarChar(255)
   is_active  Boolean   @default(true)
-  created_at DateTime? @default(now())
-  updated_at DateTime? @updatedAt
-  expires_in DateTime? @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  expires_in DateTime  @updatedAt
 
   @@index([profileId])
 }
@@ -87,8 +87,8 @@ model Merchants {
   id         String          @id @default(uuid()) @db.VarChar(255)
   mcc        String          @db.VarChar(100)
   status     MecrchantStatus @default(pending)
-  created_at DateTime?       @default(now())
-  updated_at DateTime?       @updatedAt
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
   profile    Profile?        @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId  String          @unique @db.VarChar(255)
   userId     String?         @db.VarChar(255)
@@ -98,7 +98,6 @@ model Merchants {
 }
 
 enum ProvidersEnum {
-  cielo
   pagarme
   pagseguro
 }
@@ -107,10 +106,12 @@ model Providers {
   id          String        @id @default(uuid()) @db.VarChar(255)
   name        ProvidersEnum
   credentials Json          @db.Json
-  priority    Int           @default(0)
-  created_at  DateTime?     @default(now())
-  updated_at  DateTime?     @updatedAt
-  merchantId  String?       @db.VarChar(255)
+  priority    Int           @default(1)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  profileId   String?       @db.VarChar(255)
+  userId      String?       @db.VarChar(255)
+  merchantId  String        @db.VarChar(255)
   merchant    Merchants[]   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
 }

@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import { Pagarme } from 'src/providers/entities/provider.entity';
 
 export class MerchantResult {
   @ApiProperty({ example: '152f6a39-d083-460f-aa66-e770a069356b' })
@@ -21,4 +22,12 @@ export class MerchantResult {
 
   @ApiProperty({ example: '4618e0d3-6d67-4e5c-8652-3da33df7d455' })
   userId: string;
+
+  @ApiProperty({
+    type: 'array',
+    items: {
+      $ref: getSchemaPath(Pagarme),
+    },
+  })
+  provider: string;
 }

@@ -1,15 +1,56 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProviderDto } from './dto/create-provider.dto';
+import { Prisma } from '.prisma/client';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/common/utils/prisma.service';
+import RabbitmqService from 'src/common/utils/rabbitmq-service';
 import { UpdateProviderDto } from './dto/update-provider.dto';
 
 @Injectable()
 export class ProvidersService {
-  create(createProviderDto: CreateProviderDto) {
-    return 'This action adds a new provider';
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly rabbitmq: RabbitmqService,
+  ) {}
+
+  sendToQueue(routingKey: string, data: any) {
+    this.rabbitmq.publishInExchange(
+      process.env.RABBTIMQ_PROVIDER_EXCHANGE,
+      routingKey,
+      data,
+    );
   }
 
-  findAll() {
-    return `This action returns all providers`;
+  async create(data: Prisma.ProvidersCreateInput, user: any) {
+    const { id, profile } = user;
+    const { merchantId } = data;
+
+    try {
+      const provider = await this.prisma.providers.create({
+        data: {
+          ...data,
+          profileId: profile,
+          userId: id,
+          merchant: {
+            connect: { id: merchantId },
+          },
+        },
+      });
+
+      return provider;
+    } catch (err) {
+      // this.sendToQueue('tokenErrorLogs', err);
+
+      throw new BadRequestException({
+        status: 400,
+        message: err.message,
+      });
+    }
+  }
+
+  findAll(user: any) {
+    const { id, profile } = user;
+    return this.prisma.providers.findMany({
+      where: { userId: id, profileId: profile },
+    });
   }
 
   findOne(id: number) {

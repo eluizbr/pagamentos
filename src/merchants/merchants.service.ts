@@ -70,11 +70,17 @@ export class MerchantsService {
   }
 
   findAll(where: any) {
-    return this.prisma.merchants.findMany({ where });
+    return this.prisma.merchants.findMany({
+      where,
+      include: { _count: true, provider: true },
+    });
   }
 
   async findOne(where: Prisma.MerchantsWhereInput) {
-    const merchant = await this.prisma.merchants.findFirst({ where });
+    const merchant = await this.prisma.merchants.findFirst({
+      where,
+      include: { _count: true, provider: true },
+    });
 
     if (!merchant) {
       throw new NotFoundException(`Merchant id ${where.id}, não existe!`);

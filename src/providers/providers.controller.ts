@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -39,9 +40,10 @@ export class ProvidersController {
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
+  @ApiOperation({ summary: 'Cria um novo provider' })
   @ApiBody({ type: Provider })
-  create(@Body() createProviderDto: CreateProviderDto) {
-    return this.providersService.create(createProviderDto);
+  create(@Body() createProviderDto: CreateProviderDto, @Request() req) {
+    return this.providersService.create(createProviderDto, req.user);
   }
 
   @Get()
@@ -52,8 +54,8 @@ export class ProvidersController {
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiOperation({ summary: 'Retorna todos os providers' })
-  findAll() {
-    return this.providersService.findAll();
+  findAll(@Request() req) {
+    return this.providersService.findAll(req.user);
   }
 
   @Get(':id')
