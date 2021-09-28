@@ -39,9 +39,14 @@ export class ProvidersService {
         },
       });
 
+      this.sendToQueue('providerCreateLogs', {
+        type: 'createProvider',
+        ...provider,
+      });
+
       return provider;
     } catch (err) {
-      // this.sendToQueue('tokenErrorLogs', err);
+      this.sendToQueue('providerErrorLogs', err);
 
       throw new BadRequestException({
         status: 400,
@@ -77,15 +82,25 @@ export class ProvidersService {
         data,
       });
 
+      this.sendToQueue('providerUpdateLogs', {
+        type: 'updateProvider',
+        id: provider.id,
+        update: provider.updated_at,
+        fields: Object.keys(data),
+      });
+
       return provider;
     } catch (err) {
+      this.sendToQueue('providerErrorLogs', {
+        id,
+        error: err.message,
+      });
+
       throw new BadRequestException({
         status: 400,
         message: err.message,
       });
     }
-
-    return `This action updates a #${id} provider`;
   }
 
   async remove(id: string, user: UserToken) {
@@ -94,6 +109,11 @@ export class ProvidersService {
     try {
       await this.prisma.providers.delete({ where: { id } });
     } catch (err) {
+      this.sendToQueue('providerErrorLogs', {
+        id,
+        error: err.message,
+      });
+
       throw new BadRequestException({
         status: 400,
         message: err.message,

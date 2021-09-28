@@ -1,0 +1,349 @@
+{
+  "rabbit_version": "3.9.6",
+  "rabbitmq_version": "3.9.6",
+  "product_name": "RabbitMQ",
+  "product_version": "3.9.6",
+  "users": [
+    {
+      "name": "admin",
+      "password_hash": "85JOTMwRxqMuQ+WjP/DuiRJ/crbin4r1lQ386UbBPGlmAxYM",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ["administrator"],
+      "limits": {}
+    }
+  ],
+  "vhosts": [{ "name": "/" }, { "name": "local" }],
+  "permissions": [
+    {
+      "user": "admin",
+      "vhost": "local",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "admin",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "topic_permissions": [],
+  "parameters": [],
+  "global_parameters": [
+    {
+      "name": "internal_cluster_id",
+      "value": "rabbitmq-cluster-id-IjVyjlwgVIaiLkFxIj9AuQ"
+    }
+  ],
+  "policies": [],
+  "queues": [
+    {
+      "name": "cats_queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "profile_create_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "provider_error_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "profile_update_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "user_update_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "merchant_create_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "user_error_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "profile_error_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "provider_update_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "merchant_error_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "provider_create_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "token_error_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "merchant_update_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "user_create_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "token_create_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    },
+    {
+      "name": "token_update_logs",
+      "vhost": "local",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": { "x-queue-type": "classic" }
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "profile",
+      "vhost": "local",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "merchant",
+      "vhost": "local",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "alpha",
+      "vhost": "local",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "token",
+      "vhost": "local",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "provider",
+      "vhost": "local",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "beta",
+      "vhost": "local",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "alpha",
+      "vhost": "local",
+      "destination": "user_create_logs",
+      "destination_type": "queue",
+      "routing_key": "userCreateLogs",
+      "arguments": {}
+    },
+    {
+      "source": "alpha",
+      "vhost": "local",
+      "destination": "user_error_logs",
+      "destination_type": "queue",
+      "routing_key": "userErrorLogs",
+      "arguments": {}
+    },
+    {
+      "source": "alpha",
+      "vhost": "local",
+      "destination": "user_update_logs",
+      "destination_type": "queue",
+      "routing_key": "userUpdateLogs",
+      "arguments": {}
+    },
+    {
+      "source": "beta",
+      "vhost": "local",
+      "destination": "user_create_logs",
+      "destination_type": "queue",
+      "routing_key": "userCreateLogs",
+      "arguments": {}
+    },
+    {
+      "source": "beta",
+      "vhost": "local",
+      "destination": "user_update_logs",
+      "destination_type": "queue",
+      "routing_key": "userUpdateLogs",
+      "arguments": {}
+    },
+    {
+      "source": "merchant",
+      "vhost": "local",
+      "destination": "merchant_create_logs",
+      "destination_type": "queue",
+      "routing_key": "merchantCreateLogs",
+      "arguments": {}
+    },
+    {
+      "source": "merchant",
+      "vhost": "local",
+      "destination": "merchant_error_logs",
+      "destination_type": "queue",
+      "routing_key": "merchantErrorLogs",
+      "arguments": {}
+    },
+    {
+      "source": "merchant",
+      "vhost": "local",
+      "destination": "merchant_update_logs",
+      "destination_type": "queue",
+      "routing_key": "merchantUpdateLogs",
+      "arguments": {}
+    },
+    {
+      "source": "profile",
+      "vhost": "local",
+      "destination": "profile_create_logs",
+      "destination_type": "queue",
+      "routing_key": "profileCreateLogs",
+      "arguments": {}
+    },
+    {
+      "source": "profile",
+      "vhost": "local",
+      "destination": "profile_error_logs",
+      "destination_type": "queue",
+      "routing_key": "profileErrorLogs",
+      "arguments": {}
+    },
+    {
+      "source": "profile",
+      "vhost": "local",
+      "destination": "profile_update_logs",
+      "destination_type": "queue",
+      "routing_key": "profileUpdateLogs",
+      "arguments": {}
+    },
+    {
+      "source": "provider",
+      "vhost": "local",
+      "destination": "provider_create_logs",
+      "destination_type": "queue",
+      "routing_key": "providerCreateLogas",
+      "arguments": {}
+    },
+    {
+      "source": "provider",
+      "vhost": "local",
+      "destination": "provider_error_logs",
+      "destination_type": "queue",
+      "routing_key": "providerErrorLogs",
+      "arguments": {}
+    },
+    {
+      "source": "provider",
+      "vhost": "local",
+      "destination": "provider_update_logs",
+      "destination_type": "queue",
+      "routing_key": "providerUpdateLogs",
+      "arguments": {}
+    },
+    {
+      "source": "token",
+      "vhost": "local",
+      "destination": "token_create_logs",
+      "destination_type": "queue",
+      "routing_key": "tokenCreateLogs",
+      "arguments": {}
+    },
+    {
+      "source": "token",
+      "vhost": "local",
+      "destination": "token_error_logs",
+      "destination_type": "queue",
+      "routing_key": "tokenErrorLogs",
+      "arguments": {}
+    },
+    {
+      "source": "token",
+      "vhost": "local",
+      "destination": "token_update_logs",
+      "destination_type": "queue",
+      "routing_key": "tokenUpdateLogs",
+      "arguments": {}
+    }
+  ]
+}
