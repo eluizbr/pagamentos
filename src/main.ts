@@ -20,7 +20,7 @@ async function bootstrap() {
     .setDescription('API de pagamentos')
     .setVersion('1.0')
     .addTag('pagamentos')
-    .addBearerAuth()
+    .addBearerAuth({ type: 'http', description: 'Token JWT' })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
