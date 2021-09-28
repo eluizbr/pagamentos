@@ -92,7 +92,7 @@ export class ProvidersController {
   @ApiOkResponse({ description: 'Provider removido com sucesso' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiNotFoundResponse({ description: 'Provider not found' })
-  remove(@Param('id') id: string) {
-    return this.providersService.remove(+id);
+  remove(@Param('id') id: string, @Request() req) {
+    return this.providersService.remove(id, req.user);
   }
 }

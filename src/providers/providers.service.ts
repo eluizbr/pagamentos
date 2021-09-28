@@ -57,8 +57,8 @@ export class ProvidersService {
     });
   }
 
-  findOne(id: string, user: UserToken) {
-    const provider = this.prisma.providers.findFirst({
+  async findOne(id: string, user: UserToken) {
+    const provider = await this.prisma.providers.findFirst({
       where: { id, userId: user.id, profileId: user.profileId },
     });
     if (!provider) {
@@ -88,7 +88,17 @@ export class ProvidersService {
     return `This action updates a #${id} provider`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} provider`;
+  async remove(id: string, user: UserToken) {
+    await this.findOne(id, user);
+
+    try {
+      await this.prisma.providers.delete({ where: { id } });
+    } catch (err) {
+      throw new BadRequestException({
+        status: 400,
+        message: err.message,
+      });
+    }
+    return;
   }
 }
