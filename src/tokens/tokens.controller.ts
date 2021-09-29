@@ -10,18 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import {
-  ApiBadRequestResponse,
-  ApiBearerAuth,
-  ApiBody,
-  ApiCreatedResponse,
-  ApiExcludeEndpoint,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+  ApiDocGenericDelete,
+  ApiDocGenericGetAll,
+  ApiDocGenericGetOne,
+  ApiDocGenericPost,
+} from 'src/common/decorators/apiDoc';
 import { CreateTokenDto } from './dto/create-token.dto';
 import { UpdateTokenDto } from './dto/update-token.dto';
 import { ResultTokenDto } from './entities/result-token.entity';
@@ -36,37 +31,19 @@ export class TokensController {
   constructor(private readonly tokensService: TokensService) {}
 
   @Post()
-  @ApiCreatedResponse({
-    description: 'O token foi criado com sucesso',
-    type: ResultTokenDto,
-  })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiBody({ type: Token })
-  @ApiOperation({ summary: 'Cria um novo token pata o perfil' })
+  @ApiDocGenericPost('token', Token, ResultTokenDto)
   create(@Body() createTokenDto: CreateTokenDto, @Request() req) {
     return this.tokensService.create(createTokenDto, req.user);
   }
 
   @Get()
-  @ApiOkResponse({
-    description: 'Retorna todos os tokens do perfil',
-    type: [ResultTokenDto],
-  })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiOperation({ summary: 'Retorna todos os tokens do perfil' })
+  @ApiDocGenericGetAll('token', ResultTokenDto)
   findAll(@Request() req) {
     return this.tokensService.findAll(req.user.id);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Retorna o token pelo ID' })
-  @ApiOkResponse({
-    description: 'Retorna o token pelo ID',
-    type: ResultTokenDto,
-  })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
+  @ApiDocGenericGetOne('token', ResultTokenDto)
   findOne(@Param('id') id: string, @Request() req) {
     return this.tokensService.findOne(id, req.user);
   }
@@ -82,10 +59,7 @@ export class TokensController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Remove token pelo id' })
-  @ApiOkResponse({ description: 'O token foi removido com sucesso' })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiNotFoundResponse({ description: 'Token não encontrado' })
+  @ApiDocGenericDelete('token')
   remove(@Param('id') id: string, @Request() req) {
     return this.tokensService.remove(id, req.user);
   }

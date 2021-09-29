@@ -10,16 +10,20 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiBody,
-  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import {
+  ApiDocGenericDelete,
+  ApiDocGenericGetAll,
+  ApiDocGenericGetOne,
+  ApiDocGenericPatch,
+  ApiDocGenericPost,
+} from 'src/common/decorators/apiDoc';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -36,14 +40,7 @@ export class UsersController {
    * Create new user
    */
   @Post()
-  @ApiCreatedResponse({
-    description: 'The user has been successfully created.',
-    type: User,
-  })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiBody({ type: CreateUserDto })
-  @ApiOperation({ summary: 'Create new user' })
+  @ApiDocGenericPost('usuário', User, CreateUserDto)
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
@@ -52,13 +49,7 @@ export class UsersController {
    * Get all users
    */
   @Get()
-  @ApiOkResponse({
-    description: 'The user data',
-    type: User,
-    isArray: true,
-  })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiOperation({ summary: 'Get all Users' })
+  @ApiDocGenericGetAll('usuários', User)
   findAll() {
     return this.usersService.findAll();
   }
@@ -67,12 +58,7 @@ export class UsersController {
    * Get  user by ID
    */
   @Get(':id')
-  @ApiOperation({ summary: 'Get one user by ID' })
-  @ApiOkResponse({
-    description: 'The user data',
-    type: User,
-  })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
+  @ApiDocGenericGetOne('usuário', User)
   findOne(@Param('id') id: string) {
     return this.usersService.findOne({ id });
   }
@@ -81,13 +67,7 @@ export class UsersController {
    * Update user by ID
    */
   @Patch(':id')
-  @ApiOperation({ summary: 'Update user password by ID' })
-  @ApiOkResponse({
-    description: 'The user data',
-    type: User,
-  })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
+  @ApiDocGenericPatch('usuário', User, User)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update({ id }, updateUserDto);
   }
@@ -96,6 +76,7 @@ export class UsersController {
    * Remove user by ID
    */
   @Delete(':id')
+  @ApiDocGenericDelete('usuário')
   @ApiOperation({ summary: 'Delete user by ID' })
   @ApiOkResponse({ description: 'User has been deleted successfully' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
