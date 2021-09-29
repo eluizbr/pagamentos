@@ -65,6 +65,7 @@ model Profile {
   userId        String?      @db.VarChar(255)
   token         Token[]
 
+  Costumers Costumers[]
   @@index([name, userId])
 }
 
@@ -114,4 +115,51 @@ model Providers {
   merchantId  String        @db.VarChar(255)
   merchant    Merchants[]   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
+}
+
+model Costumers {
+  id          String    @id @default(uuid()) @db.VarChar(255)
+  name        String    @db.VarChar(255)
+  phoneNumber String    @db.VarChar(100)
+  email       String    @db.VarChar(100)
+  document    Json
+  address     Json
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  prodileId   String    @db.VarChar(255)
+  profile     Profile[] @relation(fields: [prodileId], references: [id])
+  cards       Cards[]
+
+  @@index([email])
+}
+
+enum CardsStatus {
+  active
+  failed
+  pending
+}
+
+enum CardsBrand {
+  amex
+  diners
+  discover
+  elo
+  jcb
+  master
+  visa
+}
+
+model Cards {
+  id              String      @id @default(uuid()) @db.VarChar(255)
+  expirationMonth String      @db.VarChar(15)
+  expirationYear  String      @db.VarChar(15)
+  brand           CardsBrand
+  lsa4digits      String      @db.VarChar(10)
+  status          String      @db.VarChar(10)
+  cvvChecked      CardsStatus @default(pending)
+  created_at      DateTime    @default(now())
+  costumerId      String      @db.VarChar(255)
+  costumer        Costumers[] @relation(fields: [costumerId], references: [id])
+
+  @@index([brand, status])
 }
