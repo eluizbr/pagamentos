@@ -1,5 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Request,
+} from '@nestjs/common';
 import { CardsService } from './cards.service';
+import { CreateCardTokenDto } from './dto/create-card-token.dto';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
 
@@ -10,6 +20,11 @@ export class CardsController {
   @Post()
   create(@Body() createCardDto: CreateCardDto) {
     return this.cardsService.create(createCardDto);
+  }
+
+  @Post('token')
+  cardToken(@Body() createCardTokenDto: CreateCardTokenDto, @Request() req) {
+    return createCardTokenDto;
   }
 
   @Get()
