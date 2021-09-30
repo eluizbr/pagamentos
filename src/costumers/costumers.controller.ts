@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConflictResponse, ApiTags } from '@nestjs/swagger';
 import {
   ApiDocGenericDelete,
   ApiDocGenericGetAll,
@@ -34,6 +34,9 @@ export class CostumersController {
 
   @Post()
   @ApiDocGenericPost('usuário', CostumerResult, Costumer)
+  @ApiConflictResponse({
+    description: 'O profile já possui um costumer com CPF ou o CNPJ informado',
+  })
   create(@Body() createCostumerDto: CreateCostumerDto, @Request() req) {
     return this.costumersService.create(createCostumerDto, req.user);
   }

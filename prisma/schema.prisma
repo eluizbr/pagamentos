@@ -143,6 +143,7 @@ model Costumers {
   profile       Profile[]            @relation(fields: [profileId], references: [id])
   cards         Cards[]
 
+  @@unique([document, profileId])
   @@index([email])
 }
 

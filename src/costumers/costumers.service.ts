@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { cnpj, cpf } from 'cpf-cnpj-validator';
 import { UserToken } from 'src/auth/jwt.strategy';
 import { PrismaService } from 'src/common/utils/prisma.service';
 import RabbitmqService from 'src/common/utils/rabbitmq-service';
@@ -46,6 +47,26 @@ export class CostumersService {
       return costumer;
     } catch (err) {
       this.sendToQueue('costumerErrorLogs', err);
+      let message = '';
+      console.log(data.document.length);
+
+      if (data.document.length >= 12) {
+        if (!cnpj.isValid(data.document))
+          message = `O profile já possui um costumer com o CNPJ ${cpf.format(
+            data.document,
+          )}`;
+      } else {
+        message = `O profile já possui um costumer com o CPF ${cpf.format(
+          data.document,
+        )}`;
+      }
+
+      if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new BadRequestException({
+          status: 409,
+          message: `${message}`,
+        });
+      }
 
       throw new BadRequestException({
         status: 400,
