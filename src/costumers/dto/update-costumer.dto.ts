@@ -4,5 +4,5 @@ import { CreateCostumerDto } from './create-costumer.dto';
 
 export class UpdateCostumerDto extends OmitType(
   PartialType(CreateCostumerDto),
-  ['document', 'name', 'profileId'],
+  ['document', 'name', 'profileId', 'document_type'],
 ) {}
