@@ -5,6 +5,7 @@ import { ProfilesModule } from './profiles/profiles.module';
 import { TokensModule } from './tokens/tokens.module';
 import { UsersModule } from './users/users.module';
 import { ProvidersModule } from './providers/providers.module';
+import { CostumersModule } from './costumers/costumers.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ProvidersModule } from './providers/providers.module';
     TokensModule,
     MerchantsModule,
     ProvidersModule,
+    CostumersModule,
   ],
   controllers: [],
   providers: [],
