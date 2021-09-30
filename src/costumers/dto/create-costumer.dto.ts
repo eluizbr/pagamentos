@@ -1,13 +1,19 @@
-import { costumerDocumentType, Prisma } from '.prisma/client';
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsPhoneNumber,
+  IsString,
+  IsUppercase,
+} from 'class-validator';
 import { IsCpfCnpjValid } from 'src/common/utils/IsCpfCnpjValid.service';
 
 enum CostumerDocumentType {
-  cpf = 'CPF',
-  cnpj = 'CNPJ',
+  CPF = 'CPF',
+  CNPJ = 'CNPJ',
 }
 
-export class CreateCostumerDto implements Prisma.CostumersCreateInput {
+export class CreateCostumerDto {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -21,11 +27,14 @@ export class CreateCostumerDto implements Prisma.CostumersCreateInput {
   email: string;
 
   @IsString()
+  @IsNotEmpty()
   @IsCpfCnpjValid()
   document: string;
 
   @IsString()
-  document_type: costumerDocumentType;
+  @IsUppercase()
+  @IsEnum(CostumerDocumentType, { message: 'DocumentType de ser CPF ou CNPJ' })
+  document_type: CostumerDocumentType;
 
   @IsString()
   street: string;
@@ -51,5 +60,5 @@ export class CreateCostumerDto implements Prisma.CostumersCreateInput {
   @IsString()
   country: string;
 
-  prodileId: string;
+  profileId: string;
 }

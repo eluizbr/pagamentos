@@ -139,8 +139,8 @@ model Costumers {
   country       String               @db.VarChar(20)
   created_at    DateTime             @default(now())
   updated_at    DateTime             @updatedAt
-  prodileId     String               @db.VarChar(255)
-  profile       Profile[]            @relation(fields: [prodileId], references: [id])
+  profileId     String               @db.VarChar(255)
+  profile       Profile[]            @relation(fields: [profileId], references: [id])
   cards         Cards[]
 
   @@index([email])

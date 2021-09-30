@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import {
   registerDecorator,
   ValidationArguments,
@@ -10,6 +11,10 @@ import { cnpj, cpf } from 'cpf-cnpj-validator';
 @ValidatorConstraint({ async: true })
 export class IsCpfCnpjValidConstraint implements ValidatorConstraintInterface {
   async validate(value: string, args: ValidationArguments) {
+    if (!value) {
+      throw new BadRequestException('Campo CPF/CNPJ obrigatório');
+    }
+
     if (value.length >= 12) {
       return cnpj.isValid(value);
     } else {

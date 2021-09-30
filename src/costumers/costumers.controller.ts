@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -33,34 +34,35 @@ export class CostumersController {
 
   @Post()
   @ApiDocGenericPost('usuário', CostumerResult, Costumer)
-  create(@Body() createCostumerDto: CreateCostumerDto) {
-    return this.costumersService.create(createCostumerDto);
+  create(@Body() createCostumerDto: CreateCostumerDto, @Request() req) {
+    return this.costumersService.create(createCostumerDto, req.user);
   }
 
   @Get()
   @ApiDocGenericGetAll('costumers', Costumer)
-  findAll() {
-    return this.costumersService.findAll();
+  findAll(@Request() req) {
+    return this.costumersService.findAll(req.user);
   }
 
   @Get(':id')
   @ApiDocGenericGetOne('costumers', Costumer)
-  findOne(@Param('id') id: string) {
-    return this.costumersService.findOne(+id);
+  findOne(@Param('id') id: string, @Request() req) {
+    return this.costumersService.findOne(id, req.user);
   }
 
   @Patch(':id')
   @ApiDocGenericPatch('costumers', CostumerUpdate, Costumer)
   update(
     @Param('id') id: string,
+    @Request() req,
     @Body() updateCostumerDto: UpdateCostumerDto,
   ) {
-    return this.costumersService.update(+id, updateCostumerDto);
+    return this.costumersService.update(id, updateCostumerDto, req.user);
   }
 
   @Delete(':id')
   @ApiDocGenericDelete('costumers')
-  remove(@Param('id') id: string) {
-    return this.costumersService.remove(+id);
+  remove(@Param('id') id: string, @Request() req) {
+    return this.costumersService.remove(id, req.user);
   }
 }
