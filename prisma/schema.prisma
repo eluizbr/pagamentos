@@ -117,18 +117,31 @@ model Providers {
 
 }
 
+enum costumerDocumentType {
+  CPF
+  CNPJ
+}
+
 model Costumers {
-  id          String    @id @default(uuid()) @db.VarChar(255)
-  name        String    @db.VarChar(255)
-  phoneNumber String    @db.VarChar(100)
-  email       String    @db.VarChar(100)
-  document    Json
-  address     Json
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
-  prodileId   String    @db.VarChar(255)
-  profile     Profile[] @relation(fields: [prodileId], references: [id])
-  cards       Cards[]
+  id            String               @id @default(uuid()) @db.VarChar(255)
+  name          String               @db.VarChar(255)
+  phoneNumber   String               @db.VarChar(100)
+  email         String               @db.VarChar(100)
+  document      String               @unique @db.VarChar(25)
+  document_type costumerDocumentType
+  street        String               @db.VarChar(255)
+  streetNumber  String               @db.VarChar(255)
+  district      String               @db.VarChar(255)
+  city          String               @db.VarChar(255)
+  state         String               @db.VarChar(70)
+  complement    String               @db.VarChar(255)
+  zipCode       String               @db.VarChar(20)
+  country       String               @db.VarChar(20)
+  created_at    DateTime             @default(now())
+  updated_at    DateTime             @updatedAt
+  prodileId     String               @db.VarChar(255)
+  profile       Profile[]            @relation(fields: [prodileId], references: [id])
+  cards         Cards[]
 
   @@index([email])
 }

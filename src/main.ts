@@ -1,7 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as csurf from 'csurf';
 import * as helmet from 'helmet';
 import { AppModule } from './app.module';
 
@@ -16,7 +15,6 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors();
-  app.use(csurf());
 
   const config = new DocumentBuilder()
     .setTitle('Pagamentos')

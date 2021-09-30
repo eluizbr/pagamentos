@@ -1,13 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 enum CostumerDocumentType {
-  CPF = 'CPF',
-  CNPJ = 'CNPJ',
+  cpf = 'CPF',
+  cnpj = 'CNPJ',
 }
 
-export class CostumerAdderss {}
-
-export class Costumer {
+export class CostumerResult {
   @ApiProperty({ example: 'José Silva' })
   name: string;
 
@@ -32,14 +30,14 @@ export class Costumer {
   @ApiProperty({ example: 'APTO 10' })
   complement: string;
 
-  @ApiProperty({ example: 'MG' })
-  state: string;
+  @ApiProperty({ example: 'Centro' })
+  district: string;
 
   @ApiProperty({ example: 'Belo Horizonte' })
   city: string;
 
-  @ApiProperty({ example: 'Centro' })
-  district: string;
+  @ApiProperty({ example: 'MG' })
+  state: string;
 
   @ApiProperty({ example: '30210210' })
   zipCode: string;

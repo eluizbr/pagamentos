@@ -1,33 +1,12 @@
-import { Prisma } from '.prisma/client';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNotEmptyObject,
-  IsObject,
-  IsPhoneNumber,
-  IsString,
-} from 'class-validator';
+import { costumerDocumentType, Prisma } from '.prisma/client';
+import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import { IsCpfCnpjValid } from 'src/common/utils/IsCpfCnpjValid.service';
 
 enum CostumerDocumentType {
   cpf = 'CPF',
   cnpj = 'CNPJ',
 }
-export type CostumerDocument = {
-  number: string;
-  type: CostumerDocumentType;
-  country: string;
-};
 
-export type CostumerAdderss = {
-  country: string;
-  state: string;
-  city: string;
-  district: string;
-  zipCode: string;
-  street: string;
-  streetNumber: string;
-  complement: string;
-};
 export class CreateCostumerDto implements Prisma.CostumersCreateInput {
   @IsString()
   @IsNotEmpty()
@@ -41,12 +20,36 @@ export class CreateCostumerDto implements Prisma.CostumersCreateInput {
   @IsNotEmpty()
   email: string;
 
-  @IsObject()
-  @IsNotEmptyObject()
-  document: CostumerDocument;
+  @IsString()
+  @IsCpfCnpjValid()
+  document: string;
 
-  @IsObject()
-  @IsNotEmptyObject()
-  address: CostumerAdderss;
+  @IsString()
+  document_type: costumerDocumentType;
+
+  @IsString()
+  street: string;
+
+  @IsString()
+  streetNumber: string;
+
+  @IsString()
+  district: string;
+
+  @IsString()
+  city: string;
+
+  @IsString()
+  state: string;
+
+  @IsString()
+  complement: string;
+
+  @IsString()
+  zipCode: string;
+
+  @IsString()
+  country: string;
+
   prodileId: string;
 }

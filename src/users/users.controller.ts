@@ -9,14 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   ApiDocGenericDelete,
   ApiDocGenericGetAll,
@@ -77,10 +70,6 @@ export class UsersController {
    */
   @Delete(':id')
   @ApiDocGenericDelete('usuário')
-  @ApiOperation({ summary: 'Delete user by ID' })
-  @ApiOkResponse({ description: 'User has been deleted successfully' })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiNotFoundResponse({ description: 'User Not found' })
   remove(@Param('id') id: string) {
     return this.usersService.remove({ id });
   }
