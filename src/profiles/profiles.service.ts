@@ -65,7 +65,7 @@ export class ProfilesService {
   async findOne(where: Prisma.ProfileWhereInput) {
     const profile = await this.prisma.profile.findFirst({
       where,
-      include: { user: { select: { id: true } }, token: true },
+      include: { user: { select: { id: true } }, token: true, costumers: true },
     });
     if (!profile) {
       throw new NotFoundException(`Pofile id ${where.id}, não existe!`);

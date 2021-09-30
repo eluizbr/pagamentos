@@ -65,7 +65,7 @@ model Profile {
   userId        String?      @db.VarChar(255)
   token         Token[]
 
-  Costumers Costumers[]
+  costumers Costumers[]
   @@index([name, userId])
 }
 

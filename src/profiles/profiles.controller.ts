@@ -21,6 +21,7 @@ import {
 import CreateProfileDto from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './entities/profile.entity';
+import { ProfileResult } from './entities/profile.result.entity';
 import { ProfileUpdate } from './entities/update-profile.entity';
 import { ProfilesService } from './profiles.service';
 
@@ -38,19 +39,19 @@ export class ProfilesController {
   }
 
   @Get()
-  @ApiDocGenericGetAll('profile', Profile)
+  @ApiDocGenericGetAll('profile', ProfileResult)
   findAll(@Request() req) {
     return this.profilesService.findAll({ userId: req.user.id });
   }
 
   @Get(':id')
-  @ApiDocGenericGetOne('profile', Profile)
+  @ApiDocGenericGetOne('profile', ProfileResult)
   findOne(@Param('id') id: string, @Request() req) {
     return this.profilesService.findOne({ id, userId: req.user.id });
   }
 
   @Patch(':id')
-  @ApiDocGenericPatch('profile', ProfileUpdate, ProfileUpdate)
+  @ApiDocGenericPatch('profile', ProfileUpdate, Profile)
   update(
     @Param('id') id: any,
     @Request() req,

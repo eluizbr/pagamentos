@@ -1,0 +1,1766 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "summary": "Autenticar usuário",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Autenticar usuário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthToken"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": ""
+          },
+          "403": {
+            "description": "Forbidden."
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "/api/users": {
+      "post": {
+        "operationId": "UsersController_create",
+        "summary": "Cria um novo usuário",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "O usuário foi criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "UsersController_findAll",
+        "summary": "Retorna todos os usuários",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Retorna todos os dados do usuários",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "operationId": "UsersController_findOne",
+        "summary": "Retorna o usuário pelo ID informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados do usuário solicitado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "UsersController_update",
+        "summary": "Atualiza o usuário pelo id informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dados do usuário solicitado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado."
+          }
+        },
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "UsersController_remove",
+        "summary": "Remove o usuário pelo ID informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "O usuário, foi deletado com sucesso"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          },
+          "404": {
+            "description": "O usuário não foi encontrado"
+          }
+        },
+        "tags": ["User"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/profiles": {
+      "post": {
+        "operationId": "ProfilesController_create",
+        "summary": "Cria um novo profile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Profile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "O profile foi criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Profile"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ProfilesController_findAll",
+        "summary": "Retorna todos os profile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Retorna todos os dados do profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Profile"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Profile"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/profiles/{id}": {
+      "get": {
+        "operationId": "ProfilesController_findOne",
+        "summary": "Retorna o profile pelo ID informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados do profile solicitado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Profile"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "ProfilesController_update",
+        "summary": "Atualiza o profile pelo id informado",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dados do profile solicitado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileUpdate"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado."
+          }
+        },
+        "tags": ["Profile"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ProfilesController_remove",
+        "summary": "Remove o profile pelo ID informado",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "O profile, foi deletado com sucesso"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          },
+          "404": {
+            "description": "O profile não foi encontrado"
+          }
+        },
+        "tags": ["Profile"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/tokens": {
+      "post": {
+        "operationId": "TokensController_create",
+        "summary": "Cria um novo token",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResultTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "O token foi criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Tokens"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "TokensController_findAll",
+        "summary": "Retorna todos os token",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Retorna todos os dados do token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResultTokenDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Tokens"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/tokens/{id}": {
+      "get": {
+        "operationId": "TokensController_findOne",
+        "summary": "Retorna o token pelo ID informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados do token solicitado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultTokenDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Tokens"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "TokensController_remove",
+        "summary": "Remove o token pelo ID informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "O token, foi deletado com sucesso"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          },
+          "404": {
+            "description": "O token não foi encontrado"
+          }
+        },
+        "tags": ["Tokens"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/merchants": {
+      "post": {
+        "operationId": "MerchantsController_create",
+        "summary": "Cria um novo merchant",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantResult"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "O merchant foi criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Merchant"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Merchants"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "MerchantsController_findAll",
+        "summary": "Retorna todos os merchant",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Retorna todos os dados do merchant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MerchantResult"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Merchants"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/merchants/{id}": {
+      "patch": {
+        "operationId": "MerchantsController_update",
+        "summary": "Atualiza o merchant pelo id informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMerchantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dados do merchant solicitado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado."
+          }
+        },
+        "tags": ["Merchants"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "MerchantsController_remove",
+        "summary": "Remove o merchant pelo ID informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "O merchant, foi deletado com sucesso"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          },
+          "404": {
+            "description": "O merchant não foi encontrado"
+          }
+        },
+        "tags": ["Merchants"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/providers": {
+      "post": {
+        "operationId": "ProvidersController_create",
+        "summary": "Cria um novo provider",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Provider"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "O provider foi criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Provider"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Providers"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ProvidersController_findAll",
+        "summary": "Retorna todos os provider",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Retorna todos os dados do provider",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Provider"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Providers"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/providers/{id}": {
+      "get": {
+        "operationId": "ProvidersController_findOne",
+        "summary": "Retorna o provider pelo ID informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados do provider solicitado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Provider"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Providers"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "ProvidersController_update",
+        "summary": "Atualiza o provider pelo id informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Provider"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dados do provider solicitado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado."
+          }
+        },
+        "tags": ["Providers"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ProvidersController_remove",
+        "summary": "Remove o provider pelo ID informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "O provider, foi deletado com sucesso"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          },
+          "404": {
+            "description": "O provider não foi encontrado"
+          }
+        },
+        "tags": ["Providers"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/costumers": {
+      "post": {
+        "operationId": "CostumersController_create",
+        "summary": "Cria um novo usuário",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Costumer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "O usuário foi criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostumerResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Costumers"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "CostumersController_findAll",
+        "summary": "Retorna todos os costumers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Retorna todos os dados do costumers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Costumer"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Costumers"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/costumers/{id}": {
+      "get": {
+        "operationId": "CostumersController_findOne",
+        "summary": "Retorna o costumers pelo ID informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados do costumers solicitado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Costumer"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado"
+          }
+        },
+        "tags": ["Costumers"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "CostumersController_update",
+        "summary": "Atualiza o costumers pelo id informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CostumerUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dados do costumers solicitado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Costumer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado."
+          }
+        },
+        "tags": ["Costumers"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "CostumersController_remove",
+        "summary": "Remove o costumers pelo ID informado",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "O costumers, foi deletado com sucesso"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acesso negado"
+          },
+          "404": {
+            "description": "O costumers não foi encontrado"
+          }
+        },
+        "tags": ["Costumers"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Pagamentos",
+    "description": "API de pagamentos",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "pagamentos",
+      "description": ""
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Token JWT"
+      }
+    },
+    "schemas": {
+      "AuthUser": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "email@email.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "superSenha"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "AuthToken": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        },
+        "required": ["token"]
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "minLength": 4,
+            "example": "joseSilva"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "example": "#er%ˆdfgtee23"
+          },
+          "email": {
+            "type": "string",
+            "example": "email@email.com"
+          }
+        },
+        "required": ["username", "password", "email"]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "required": ["username", "email"]
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "José Silva"
+          },
+          "email": {
+            "type": "string",
+            "example": "jose.silva@email.com"
+          },
+          "document": {
+            "type": "string",
+            "example": "11122233344"
+          },
+          "document_type": {
+            "type": "string",
+            "enum": ["CPF", "CNPG"]
+          },
+          "user_type": {
+            "type": "string",
+            "enum": ["PF", "PJ"]
+          },
+          "phone": {
+            "type": "string",
+            "example": "31999999999"
+          },
+          "street": {
+            "type": "string",
+            "example": "Rua X"
+          },
+          "street_number": {
+            "type": "string",
+            "example": "10"
+          },
+          "complementary": {
+            "type": "string",
+            "example": "APTO 100"
+          },
+          "neighborhood": {
+            "type": "string",
+            "example": "Centro"
+          },
+          "city": {
+            "type": "string",
+            "example": "Belo Horizonte"
+          },
+          "state": {
+            "type": "string",
+            "example": "MG"
+          },
+          "zipcode": {
+            "type": "string",
+            "example": "30320320"
+          },
+          "country": {
+            "type": "string",
+            "example": "BR"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "document",
+          "document_type",
+          "user_type",
+          "phone",
+          "street",
+          "street_number",
+          "complementary",
+          "neighborhood",
+          "city",
+          "state",
+          "zipcode"
+        ]
+      },
+      "ProfileUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "José Silva"
+          },
+          "phone": {
+            "type": "string",
+            "example": "31999999999"
+          },
+          "street": {
+            "type": "string",
+            "example": "Rua X"
+          },
+          "street_number": {
+            "type": "string",
+            "example": "10"
+          },
+          "complementary": {
+            "type": "string",
+            "example": "APTO 100"
+          },
+          "neighborhood": {
+            "type": "string",
+            "example": "Centro"
+          },
+          "city": {
+            "type": "string",
+            "example": "Belo Horizonte"
+          },
+          "state": {
+            "type": "string",
+            "example": "MG"
+          },
+          "zipcode": {
+            "type": "string",
+            "example": "30320320"
+          },
+          "country": {
+            "type": "string",
+            "example": "BR"
+          }
+        },
+        "required": [
+          "name",
+          "phone",
+          "street",
+          "street_number",
+          "complementary",
+          "neighborhood",
+          "city",
+          "state",
+          "zipcode"
+        ]
+      },
+      "ResultTokenDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "e08bddb9-f94b-4415-9996-652e16936342"
+          },
+          "type": {
+            "type": "string",
+            "example": "developement"
+          },
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "client_id": {
+            "type": "string",
+            "example": "cktzu9oco0007xaull3fopm2l"
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": "true"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2021-09-25T13:38:45.768Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2021-09-25T13:38:45.769Z"
+          },
+          "expires_in": {
+            "type": "string",
+            "example": "2022-09-26T14:14:36.000Z",
+            "description": "Por padrão expira em 1 ano"
+          },
+          "profile": {
+            "type": "string",
+            "example": "8dca8d14-c2c7-4baf-9de7-a29b2ebd0091"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "token",
+          "client_id",
+          "is_active",
+          "created_at",
+          "updated_at",
+          "expires_in",
+          "profile"
+        ]
+      },
+      "Token": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": ["developement", "production"],
+            "type": "number",
+            "example": "developement"
+          }
+        },
+        "required": ["type"]
+      },
+      "MerchantResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "152f6a39-d083-460f-aa66-e770a069356b"
+          },
+          "mcc": {
+            "type": "string",
+            "example": "4040"
+          },
+          "status": {
+            "type": "string",
+            "example": "pending"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2021-09-27T22:46:15.932Z"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2021-09-27T22:46:15.932Z"
+          },
+          "profileId": {
+            "type": "string",
+            "example": "ddd47061-4599-4a2f-a53f-142e0847ff21"
+          },
+          "userId": {
+            "type": "string",
+            "example": "4618e0d3-6d67-4e5c-8652-3da33df7d455"
+          },
+          "provider": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Pagarme"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "mcc",
+          "status",
+          "created_at",
+          "updated_at",
+          "profileId",
+          "userId",
+          "provider"
+        ]
+      },
+      "Merchant": {
+        "type": "object",
+        "properties": {
+          "mcc": {
+            "type": "string",
+            "description": "codigo mcc do cadatro do lojista no adquirente",
+            "example": "4040"
+          },
+          "profileId": {
+            "type": "string",
+            "description": "Id do profile",
+            "example": "9b1ee4d9-dde0-4474-91ff-828e15c04e66"
+          }
+        },
+        "required": ["mcc", "profileId"]
+      },
+      "UpdateMerchantDto": {
+        "type": "object",
+        "properties": {
+          "mcc": {
+            "type": "string"
+          },
+          "profileId": {
+            "type": "string"
+          }
+        }
+      },
+      "Pagarme": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "pagarme"
+          },
+          "apiKey": {
+            "type": "string",
+            "example": "XPTO_KEY"
+          }
+        },
+        "required": ["type", "apiKey"]
+      },
+      "Pagseguro": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "pagseguro"
+          },
+          "token": {
+            "type": "string",
+            "example": "60f547bd73908dd47fbed2677570d743ad7f6ab9"
+          },
+          "email": {
+            "type": "string",
+            "example": "email@email.com"
+          }
+        },
+        "required": ["type", "token", "email"]
+      },
+      "Provider": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": ["pagarme", "pagseguro"]
+          },
+          "priority": {
+            "type": "number",
+            "example": 1
+          },
+          "merchant": {
+            "type": "string",
+            "example": "152f6a39-d083-460f-aa66-e770a069356b"
+          },
+          "credentials": {
+            "$ref": "#/components/schemas/Pagarme"
+          }
+        },
+        "required": ["name", "merchant", "credentials"]
+      },
+      "ProviderResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "187699f9-792c-4804-86af-cc7afc30213d"
+          },
+          "name": {
+            "type": "string",
+            "enum": ["pagarme", "pagseguro"]
+          },
+          "credentials": {
+            "$ref": "#/components/schemas/Pagarme"
+          },
+          "priority": {
+            "type": "number",
+            "example": 1
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2021-09-28T19:24:37.673Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2021-09-28T19:24:37.673Z"
+          },
+          "profileId": {
+            "type": "string",
+            "example": "ddd47061-4599-4a2f-a53f-142e0847ff21"
+          },
+          "userId": {
+            "type": "string",
+            "example": "4618e0d3-6d67-4e5c-8652-3da33df7d455"
+          },
+          "merchantId": {
+            "type": "string",
+            "example": "152f6a39-d083-460f-aa66-e770a069356b"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "credentials",
+          "created_at",
+          "updated_at",
+          "profileId",
+          "userId",
+          "merchantId"
+        ]
+      },
+      "Costumer": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "José Silva"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "31991234567"
+          },
+          "email": {
+            "type": "string",
+            "example": "email@email.com"
+          },
+          "number": {
+            "type": "string",
+            "example": "12345678900"
+          },
+          "type": {
+            "enum": ["CPF", "CNPJ"],
+            "type": "string",
+            "example": "cpf"
+          },
+          "street": {
+            "type": "string",
+            "example": "Rua 1"
+          },
+          "streetNumber": {
+            "type": "string",
+            "example": "25"
+          },
+          "complement": {
+            "type": "string",
+            "example": "APTO 10"
+          },
+          "state": {
+            "type": "string",
+            "example": "MG"
+          },
+          "city": {
+            "type": "string",
+            "example": "Belo Horizonte"
+          },
+          "district": {
+            "type": "string",
+            "example": "Centro"
+          },
+          "zipCode": {
+            "type": "string",
+            "example": "30210210"
+          },
+          "country": {
+            "type": "string",
+            "example": "BR"
+          },
+          "prodileId": {
+            "type": "string",
+            "example": "ddd47061-4599-4a2f-a53f-142e0847ff21"
+          }
+        },
+        "required": [
+          "name",
+          "phoneNumber",
+          "email",
+          "number",
+          "type",
+          "street",
+          "streetNumber",
+          "complement",
+          "state",
+          "city",
+          "district",
+          "zipCode",
+          "country",
+          "prodileId"
+        ]
+      },
+      "CostumerResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "3b089dd3-6038-416f-b607-e20fbadd9f1e"
+          },
+          "name": {
+            "type": "string",
+            "example": "José Silva"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "31991234567"
+          },
+          "email": {
+            "type": "string",
+            "example": "email@email.com"
+          },
+          "document": {
+            "type": "string",
+            "example": "28679869074"
+          },
+          "document_type": {
+            "enum": ["CPF", "CNPJ"],
+            "type": "string",
+            "example": "CPF"
+          },
+          "street": {
+            "type": "string",
+            "example": "Rua 1"
+          },
+          "streetNumber": {
+            "type": "string",
+            "example": "25"
+          },
+          "complement": {
+            "type": "string",
+            "example": "APTO 10"
+          },
+          "district": {
+            "type": "string",
+            "example": "Centro"
+          },
+          "city": {
+            "type": "string",
+            "example": "Belo Horizonte"
+          },
+          "state": {
+            "type": "string",
+            "example": "MG"
+          },
+          "zipCode": {
+            "type": "string",
+            "example": "30210210"
+          },
+          "country": {
+            "type": "string",
+            "example": "BR"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2021-09-30T13:00:11.607Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2021-09-30T13:00:11.607Z"
+          },
+          "prodileId": {
+            "type": "string",
+            "example": "ddd47061-4599-4a2f-a53f-142e0847ff21"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "phoneNumber",
+          "email",
+          "document",
+          "document_type",
+          "street",
+          "streetNumber",
+          "complement",
+          "district",
+          "city",
+          "state",
+          "zipCode",
+          "country",
+          "created_at",
+          "updated_at",
+          "prodileId"
+        ]
+      },
+      "CostumerUpdate": {
+        "type": "object",
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "example": "31991234567"
+          },
+          "email": {
+            "type": "string",
+            "example": "email@email.com"
+          },
+          "number": {
+            "type": "string",
+            "example": "12345678900"
+          },
+          "type": {
+            "enum": ["CPF", "CNPJ"],
+            "type": "string",
+            "example": "cpf"
+          },
+          "street": {
+            "type": "string",
+            "example": "Rua 1"
+          },
+          "streetNumber": {
+            "type": "string",
+            "example": "25"
+          },
+          "complement": {
+            "type": "string",
+            "example": "APTO 10"
+          },
+          "district": {
+            "type": "string",
+            "example": "Centro"
+          },
+          "state": {
+            "type": "string",
+            "example": "MG"
+          },
+          "city": {
+            "type": "string",
+            "example": "Belo Horizonte"
+          },
+          "zipCode": {
+            "type": "string",
+            "example": "30210210"
+          },
+          "country": {
+            "type": "string",
+            "example": "BR"
+          }
+        }
+      }
+    }
+  }
+}
