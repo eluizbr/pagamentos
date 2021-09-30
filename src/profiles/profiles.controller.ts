@@ -53,7 +53,7 @@ export class ProfilesController {
   @Patch(':id')
   @ApiDocGenericPatch('profile', ProfileUpdate, Profile)
   update(
-    @Param('id') id: any,
+    @Param('id') id: string,
     @Request() req,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
@@ -65,7 +65,7 @@ export class ProfilesController {
 
   @Delete(':id')
   @ApiDocGenericDelete('profile')
-  remove(@Param('id') id: any, @Request() req) {
+  remove(@Param('id') id: string, @Request() req) {
     return this.profilesService.remove({ id, userId: req.user.id });
   }
 }

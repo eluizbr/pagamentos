@@ -11,7 +11,7 @@ export class Profile {
   @ApiProperty({ example: '11122233344' })
   document: string;
 
-  @ApiProperty({ enum: ['CPF', 'CNPG'] })
+  @ApiProperty({ enum: ['CPF', 'CNPJ'] })
   document_type: DocumentType;
 
   @ApiProperty({ enum: ['PF', 'PJ'] })
