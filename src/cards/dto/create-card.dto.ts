@@ -1,10 +1,10 @@
-import { CardsBrand, CardsStatus, Prisma } from '.prisma/client';
+import { CardsStatus } from '.prisma/client';
 
-export class CreateCardDto implements Prisma.CardsCreateInput {
+export class CreateCardDto {
   cardId?: string;
   expirationMonth: string;
   expirationYear: string;
-  brand: CardsBrand;
+  brand: string;
   last4digits: string;
   status: string;
   cvvChecked?: CardsStatus;

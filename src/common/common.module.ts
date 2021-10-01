@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { PrismaService } from 'src/common/utils/prisma.service';
 import RabbitmqService from 'src/common/utils/rabbitmq-service';
+import { GetCreditCardService } from './utils/getCreditCardBrand.service';
 
 @Module({
   imports: [
@@ -13,13 +14,19 @@ import RabbitmqService from 'src/common/utils/rabbitmq-service';
       signOptions: { expiresIn: 3600 },
     }),
   ],
-  providers: [PrismaService, JwtStrategy, RabbitmqService],
+  providers: [
+    PrismaService,
+    JwtStrategy,
+    RabbitmqService,
+    GetCreditCardService,
+  ],
   exports: [
     PrismaService,
     RabbitmqService,
     JwtStrategy,
     PassportModule,
     JwtModule,
+    GetCreditCardService,
   ],
 })
 export class CommonModule {}

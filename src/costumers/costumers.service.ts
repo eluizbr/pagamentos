@@ -81,6 +81,7 @@ export class CostumersService {
     const { id, profileId } = user;
     return this.prisma.costumers.findMany({
       where: { profileId },
+      include: { cards: true },
     });
   }
 
@@ -89,6 +90,7 @@ export class CostumersService {
 
     const costumer = await this.prisma.costumers.findFirst({
       where: { id, profileId },
+      include: { cards: true },
     });
 
     if (!costumer) {

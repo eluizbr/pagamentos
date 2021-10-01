@@ -154,13 +154,14 @@ enum CardsStatus {
 }
 
 enum CardsBrand {
+  electron
+  maestro
+  visa
+  mastercard
   amex
   diners
   discover
-  elo
   jcb
-  master
-  visa
 }
 
 model Cards {
@@ -168,7 +169,7 @@ model Cards {
   cardId          String?     @db.VarChar(255)
   expirationMonth String      @db.VarChar(15)
   expirationYear  String      @db.VarChar(15)
-  brand           CardsBrand
+  brand           String      @db.VarChar(50)
   last4digits     String      @db.VarChar(10)
   status          String      @db.VarChar(10)
   cvvChecked      CardsStatus @default(pending)

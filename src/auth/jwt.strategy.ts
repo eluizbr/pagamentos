@@ -33,16 +33,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       where: { userId: user.id },
     });
 
-    if (!user || !profile) {
+    if (!user) {
       throw new UnauthorizedException('Não autorizado');
     }
 
     delete user.password;
-    user.profileId = profile.id;
+    user.profileId = profile?.id;
 
     const userToken: UserToken = {
       ...user,
-      profileId: profile.id,
+      profileId: profile?.id,
       password: null,
     };
 

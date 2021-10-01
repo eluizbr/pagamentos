@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { map } from 'rxjs';
 import { UserToken } from 'src/auth/jwt.strategy';
+import { GetCreditCardService } from 'src/common/utils/getCreditCardBrand.service';
 import { PrismaService } from 'src/common/utils/prisma.service';
 import RabbitmqService from 'src/common/utils/rabbitmq-service';
 import { CreateCardDto } from './dto/create-card.dto';
@@ -14,6 +15,7 @@ export class CardsService {
     private readonly prisma: PrismaService,
     private httpService: HttpService,
     private readonly rabbitmq: RabbitmqService,
+    private readonly crediteCardService: GetCreditCardService,
   ) {}
 
   sendToQueue(routingKey: string, data: any) {
@@ -61,10 +63,10 @@ export class CardsService {
     const data = { data: body };
 
     const newCard: CreateCardDto = {
-      expirationMonth: '',
-      expirationYear: '',
-      brand: 'master',
-      last4digits: '',
+      expirationMonth: body.cardExpirationDate.substring(0, 2),
+      expirationYear: body.cardExpirationDate.substring(3, 8),
+      brand: this.crediteCardService.brand(body.cardNumber),
+      last4digits: body.cardNumber.substring(12, 16),
       status: '',
       cvvChecked: 'pending',
       costumerId: body.costumerId,
