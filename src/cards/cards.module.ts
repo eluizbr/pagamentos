@@ -1,9 +1,20 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { CardsService } from './cards.service';
+import { CommonModule } from 'src/common/common.module';
 import { CardsController } from './cards.controller';
+import { CardsService } from './cards.service';
 
 @Module({
+  imports: [
+    CommonModule,
+    HttpModule.register({
+      baseURL: process.env.VAULT_URL,
+      headers: {
+        'X-Vault-Token': process.env.VAULT_TOKEN,
+      },
+    }),
+  ],
   controllers: [CardsController],
-  providers: [CardsService]
+  providers: [CardsService],
 })
 export class CardsModule {}

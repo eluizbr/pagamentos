@@ -644,6 +644,13 @@
     semver "^7.3.4"
     tar "^6.1.0"
 
+"@nestjs/axios@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/axios/-/axios-0.0.2.tgz#ef3e6432e74678815b7bd32a5ac0208b243742e7"
+  integrity sha512-T0EKw91tJ+/XhmDYsr4DrRJ+grn0VEOZ6zAkuJfKM4ltBqwI5dTM8T8BumGqVZ3iGe5YTo/PMb/o8oilJaajwg==
+  dependencies:
+    axios "0.21.4"
+
 "@nestjs/cli@^8.0.0":
   version "8.1.1"
   resolved "https://registry.npmjs.org/@nestjs/cli/-/cli-8.1.1.tgz"
@@ -857,6 +864,13 @@
   integrity sha1-4UnLQvsKTLGk1i+KIjCbTIJL2Ag=
   dependencies:
     argon2 "*"
+
+"@types/axios@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@types/axios/-/axios-0.14.0.tgz#ec2300fbe7d7dddd7eb9d3abf87999964cafce46"
+  integrity sha1-7CMA++fX3d1+udOr+HmZlkyvzkY=
+  dependencies:
+    axios "*"
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.1.16"
@@ -1569,7 +1583,7 @@ at-least-node@^1.0.0:
   resolved "https://registry.npmjs.org/at-least-node/-/at-least-node-1.0.0.tgz"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
-axios@0.21.4:
+axios@*, axios@0.21.4:
   version "0.21.4"
   resolved "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz"
   integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
