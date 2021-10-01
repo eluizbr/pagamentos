@@ -23,10 +23,7 @@ export class MerchantsService {
   }
 
   async create(data: any, request: any) {
-    const { id } = request;
-    const { profileId } = data;
-
-    delete data.profileId;
+    const { id, profileId } = request;
 
     const merchant = await this.prisma.merchants.findFirst({
       where: { profileId },
