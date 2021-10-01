@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Cards" ALTER COLUMN "cardId" DROP NOT NULL;

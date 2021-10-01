@@ -22,7 +22,7 @@ export class CreateCardTokenDto {
   @IsNotEmpty({ message: 'Usuário para o cartão é obrigatório' })
   costumerId: string;
 
-  @IsString()
-  @IsNotEmpty({ message: 'Profile para o cartão é obrigatório' })
-  profileId: string;
+  // @IsString()
+  // @IsNotEmpty({ message: 'Profile para o cartão é obrigatório' })
+  // profileId: string;
 }

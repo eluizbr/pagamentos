@@ -1,7 +1,10 @@
+import { Prisma } from '.prisma/client';
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
-import { map, Observable } from 'rxjs';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { map } from 'rxjs';
+import { UserToken } from 'src/auth/jwt.strategy';
 import { PrismaService } from 'src/common/utils/prisma.service';
+import RabbitmqService from 'src/common/utils/rabbitmq-service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
 
@@ -10,21 +13,74 @@ export class CardsService {
   constructor(
     private readonly prisma: PrismaService,
     private httpService: HttpService,
+    private readonly rabbitmq: RabbitmqService,
   ) {}
 
-  create(createCardDto: CreateCardDto) {
-    return 'This action adds a new card';
+  sendToQueue(routingKey: string, data: any) {
+    this.rabbitmq.publishInExchange(
+      process.env.RABBTIMQ_CARD_EXCHANGE,
+      routingKey,
+      data,
+    );
   }
 
-  token(body: any): Observable<any> {
+  async create(data: Prisma.CardsCreateInput, user: UserToken) {
+    const { costumerId } = data;
+    try {
+      const card = await this.prisma.cards.create({
+        data: {
+          ...data,
+          costumer: {
+            connect: { id: data.costumerId },
+          },
+        },
+      });
+
+      this.sendToQueue('cardCreateLogs', {
+        type: 'createCard',
+        ...card,
+      });
+
+      return card;
+    } catch (err) {
+      console.log(err);
+      this.sendToQueue('cardErrorLogs', {
+        costumerId,
+        error: err.meta,
+      });
+
+      throw new BadRequestException({
+        status: 400,
+        message: `O card ${err.meta.target}, já esta em uso por outro usuário!`,
+      });
+    }
+  }
+
+  async token(body: any, user: UserToken): Promise<any> {
+    body.profileId = user.profileId;
     const data = { data: body };
 
-    const url = `cartoes/data/${body.costumerId}`;
-    return this.httpService.post(url, data).pipe(
-      map((res) => {
-        return { card_id: res.data.request_id };
-      }),
-    );
+    const newCard: CreateCardDto = {
+      expirationMonth: '',
+      expirationYear: '',
+      brand: 'master',
+      last4digits: '',
+      status: '',
+      cvvChecked: 'pending',
+      costumerId: body.costumerId,
+    };
+
+    try {
+      const newCardResult: any = await this.create(newCard, user);
+
+      const url = `cartoes/data/${newCardResult.id}`;
+      return this.httpService.post(url, data).pipe(map((res) => newCardResult));
+    } catch (err) {
+      throw new BadRequestException({
+        status: 400,
+        message: `O card ${err.meta.target}, já esta em uso por outro usuário!`,
+      });
+    }
   }
 
   findAll() {

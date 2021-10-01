@@ -4,7 +4,6 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { PrismaService } from 'src/common/utils/prisma.service';
 import RabbitmqService from 'src/common/utils/rabbitmq-service';
-import AxiosService from './utils/axios-service';
 
 @Module({
   imports: [
@@ -14,14 +13,13 @@ import AxiosService from './utils/axios-service';
       signOptions: { expiresIn: 3600 },
     }),
   ],
-  providers: [PrismaService, JwtStrategy, RabbitmqService, AxiosService],
+  providers: [PrismaService, JwtStrategy, RabbitmqService],
   exports: [
     PrismaService,
     RabbitmqService,
     JwtStrategy,
     PassportModule,
     JwtModule,
-    AxiosService,
   ],
 })
 export class CommonModule {}
