@@ -21,5 +21,6 @@ import { UsersModule } from './users/users.module';
     CostumersModule,
     CardsModule,
   ],
+  providers: [],
 })
 export class AppModule {}

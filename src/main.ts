@@ -16,6 +16,7 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors();
+  // app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()
     .setTitle('Pagamentos')

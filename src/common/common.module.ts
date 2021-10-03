@@ -1,7 +1,7 @@
 import { BullModule, InjectQueue } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MiddlewareBuilder } from '@nestjs/core';
+import { APP_FILTER, MiddlewareBuilder } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Queue } from 'bull';
@@ -9,11 +9,10 @@ import { createBullBoard } from 'bull-board';
 import { BullAdapter } from 'bull-board/bullAdapter';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { PrismaService } from 'src/common/utils/prisma.service';
-import { ProfileConsumerService } from 'src/profiles/jobs/profile.consumer.service';
-import { ProfileProducerService } from 'src/profiles/jobs/profile.producer.service';
-import { TokenConsumerService } from 'src/tokens/jobs/token.consumer.service';
-import { TokenProducerService } from 'src/tokens/jobs/token.producer.service';
+import { ErrorsLogsConsumerService } from './jobs/errors-logs.consumer.service';
+import { ErrorsLogsProducerService } from './jobs/errors-logs.producer.service';
 import { GetCreditCardService } from './utils/getCreditCardBrand.service';
+import { HttpExceptionFilter } from './utils/http-exception.filter';
 
 @Module({
   imports: [
@@ -34,15 +33,18 @@ import { GetCreditCardService } from './utils/getCreditCardBrand.service';
     BullModule.registerQueue({ name: process.env.REDIS_PROFILE_QUEUE }),
     BullModule.registerQueue({ name: process.env.REDIS_TOKEN_QUEUE }),
     BullModule.registerQueue({ name: process.env.REDIS_AUTH_QUEUE }),
+    BullModule.registerQueue({ name: process.env.REDIS_ERRORS_QUEUE }),
   ],
   providers: [
-    ProfileConsumerService,
-    ProfileProducerService,
-    TokenConsumerService,
-    TokenProducerService,
     PrismaService,
     JwtStrategy,
     GetCreditCardService,
+    ErrorsLogsProducerService,
+    ErrorsLogsConsumerService,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
   ],
   exports: [
     PrismaService,
@@ -54,6 +56,7 @@ import { GetCreditCardService } from './utils/getCreditCardBrand.service';
 })
 export class CommonModule {
   constructor(
+    @InjectQueue(process.env.REDIS_ERRORS_QUEUE) private errorsQueue: Queue,
     @InjectQueue(process.env.REDIS_AUTH_QUEUE) private authQueue: Queue,
     @InjectQueue(process.env.REDIS_USERS_QUEUE) private userQueue: Queue,
     @InjectQueue(process.env.REDIS_PROFILE_QUEUE) private profileQueue: Queue,
@@ -62,6 +65,7 @@ export class CommonModule {
 
   configure(consumer: MiddlewareBuilder) {
     const { router } = createBullBoard([
+      new BullAdapter(this.errorsQueue),
       new BullAdapter(this.authQueue),
       new BullAdapter(this.userQueue),
       new BullAdapter(this.profileQueue),
