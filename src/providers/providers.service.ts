@@ -6,22 +6,10 @@ import {
 } from '@nestjs/common';
 import { UserToken } from 'src/auth/jwt.strategy';
 import { PrismaService } from 'src/common/utils/prisma.service';
-import RabbitmqService from 'src/common/utils/rabbitmq-service';
 
 @Injectable()
 export class ProvidersService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly rabbitmq: RabbitmqService,
-  ) {}
-
-  sendToQueue(routingKey: string, data: any) {
-    this.rabbitmq.publishInExchange(
-      process.env.RABBTIMQ_PROVIDER_EXCHANGE,
-      routingKey,
-      data,
-    );
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(data: Prisma.ProvidersCreateInput, request: any) {
     const { id, profileId } = request;
@@ -39,15 +27,8 @@ export class ProvidersService {
         },
       });
 
-      this.sendToQueue('providerCreateLogs', {
-        type: 'createProvider',
-        ...provider,
-      });
-
       return provider;
     } catch (err) {
-      this.sendToQueue('providerErrorLogs', err);
-
       throw new BadRequestException({
         status: 400,
         message: err.message,
@@ -82,20 +63,8 @@ export class ProvidersService {
         data,
       });
 
-      this.sendToQueue('providerUpdateLogs', {
-        type: 'updateProvider',
-        id: provider.id,
-        update: provider.updated_at,
-        fields: Object.keys(data),
-      });
-
       return provider;
     } catch (err) {
-      this.sendToQueue('providerErrorLogs', {
-        id,
-        error: err.message,
-      });
-
       throw new BadRequestException({
         status: 400,
         message: err.message,
@@ -109,11 +78,6 @@ export class ProvidersService {
     try {
       await this.prisma.providers.delete({ where: { id } });
     } catch (err) {
-      this.sendToQueue('providerErrorLogs', {
-        id,
-        error: err.message,
-      });
-
       throw new BadRequestException({
         status: 400,
         message: err.message,

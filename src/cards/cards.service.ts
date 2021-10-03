@@ -5,7 +5,6 @@ import { map } from 'rxjs';
 import { UserToken } from 'src/auth/jwt.strategy';
 import { GetCreditCardService } from 'src/common/utils/getCreditCardBrand.service';
 import { PrismaService } from 'src/common/utils/prisma.service';
-import RabbitmqService from 'src/common/utils/rabbitmq-service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
 
@@ -14,17 +13,8 @@ export class CardsService {
   constructor(
     private readonly prisma: PrismaService,
     private httpService: HttpService,
-    private readonly rabbitmq: RabbitmqService,
     private readonly crediteCardService: GetCreditCardService,
   ) {}
-
-  sendToQueue(routingKey: string, data: any) {
-    this.rabbitmq.publishInExchange(
-      process.env.RABBTIMQ_CARD_EXCHANGE,
-      routingKey,
-      data,
-    );
-  }
 
   async create(data: Prisma.CardsCreateInput, user: UserToken) {
     const { costumerId } = data;
@@ -38,19 +28,8 @@ export class CardsService {
         },
       });
 
-      this.sendToQueue('cardCreateLogs', {
-        type: 'createCard',
-        ...card,
-      });
-
       return card;
     } catch (err) {
-      console.log(err);
-      this.sendToQueue('cardErrorLogs', {
-        costumerId,
-        error: err.meta,
-      });
-
       throw new BadRequestException({
         status: 400,
         message: `O card ${err.meta.target}, já esta em uso por outro usuário!`,

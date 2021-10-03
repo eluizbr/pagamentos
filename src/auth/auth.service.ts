@@ -19,6 +19,7 @@ export class AuthService {
         token: this.jwtService.sign(result),
       };
     }
+
     throw new UnauthorizedException(`Não autorizado!`);
   }
 }

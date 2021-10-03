@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { argon2id, hash as hashPassword } from 'argon2';
 import { PrismaService } from 'src/common/utils/prisma.service';
-import RabbitmqService from 'src/common/utils/rabbitmq-service';
+import { UserProducerService } from './jobs/users.producer.service';
 
 const select = {
   id: true,
@@ -23,17 +23,9 @@ const select = {
 @Injectable()
 export class UsersService {
   constructor(
+    private userProducer: UserProducerService,
     private readonly prisma: PrismaService,
-    private readonly rabbitmq: RabbitmqService,
   ) {}
-
-  sendToQueue(routingKey: string, data: any) {
-    this.rabbitmq.publishInExchange(
-      process.env.RABBTIMQ_USERS_EXCHANGE,
-      routingKey,
-      data,
-    );
-  }
 
   async encodePassword(data) {
     const password = await hashPassword(data.password, {
@@ -54,21 +46,9 @@ export class UsersService {
         data: { email, username, password },
       });
       delete user.password;
-
-      // Create user log
-      this.sendToQueue('userCreateLogs', {
-        type: 'createUser',
-        ...user,
-      });
-
+      this.userProducer.sendToQueue('create', user);
       return user;
     } catch (err) {
-      this.sendToQueue('userErrorLogs', {
-        email,
-        username,
-        error: err.meta,
-      });
-
       throw new BadRequestException({
         status: 404,
         message: `O campo ${err.meta.target}, já esta em uso por outro usuário!`,
@@ -115,14 +95,6 @@ export class UsersService {
       select,
     });
 
-    // Update user log
-    this.sendToQueue('userUpdateLogs', {
-      type: 'changePassword',
-      id: user.id,
-      update: user.updated_at,
-      fields: Object.keys(data),
-    });
-
     return user;
   }
 
@@ -130,11 +102,6 @@ export class UsersService {
     await this.findOne(where);
 
     const user = await this.prisma.user.delete({ where, select });
-    this.sendToQueue('userRemoveLogs', {
-      type: 'removeUser',
-      id: user.id,
-      update: user.updated_at,
-    });
 
     return user;
   }

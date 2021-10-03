@@ -5,22 +5,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/common/utils/prisma.service';
-import RabbitmqService from 'src/common/utils/rabbitmq-service';
 
 @Injectable()
 export class ProfilesService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly rabbitmq: RabbitmqService,
-  ) {}
-
-  sendToQueue(routingKey: string, data: any) {
-    this.rabbitmq.publishInExchange(
-      process.env.RABBTIMQ_PROFILE_EXCHANGE,
-      routingKey,
-      data,
-    );
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(data: Prisma.ProfileCreateInput, userId: string) {
     if (!userId) {
@@ -36,18 +24,8 @@ export class ProfilesService {
         },
       });
 
-      this.sendToQueue('profileCreateLogs', {
-        type: 'profileCreate',
-        ...profile,
-      });
-
       return profile;
     } catch (err) {
-      this.sendToQueue('profileErrorLogs', {
-        userId,
-        error: err.meta,
-      });
-
       throw new BadRequestException({
         status: 400,
         message: `O campo ${err.meta.target}, já esta em uso por outro usuário!`,
@@ -94,13 +72,6 @@ export class ProfilesService {
       data,
     });
 
-    this.sendToQueue('profileUpdateLogs', {
-      type: 'updateProfile',
-      id: profile.id,
-      update: profile.updated_at,
-      fields: Object.keys(data),
-    });
-
     return profile;
   }
 
@@ -112,11 +83,6 @@ export class ProfilesService {
       await this.prisma.profile.delete({ where: { id } });
       return;
     } catch (err) {
-      this.sendToQueue('profileRemoveLogs', {
-        userId,
-        error: err.meta,
-      });
-
       throw new BadRequestException({
         status: 404,
         message: `Erro ao tentar remover o perfil ${id}`,

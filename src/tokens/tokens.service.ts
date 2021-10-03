@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/common/utils/prisma.service';
-import RabbitmqService from 'src/common/utils/rabbitmq-service';
 import { ProfilesService } from 'src/profiles/profiles.service';
 import { CreateTokenDto } from './dto/create-token.dto';
 import { UpdateTokenDto } from './dto/update-token.dto';
@@ -14,18 +13,9 @@ import { UpdateTokenDto } from './dto/update-token.dto';
 export class TokensService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly rabbitmq: RabbitmqService,
     private readonly profileService: ProfilesService,
     private readonly jwtService: JwtService,
   ) {}
-
-  sendToQueue(routingKey: string, data: any) {
-    this.rabbitmq.publishInExchange(
-      process.env.RABBTIMQ_TOKEN_EXCHANGE,
-      routingKey,
-      data,
-    );
-  }
 
   async generateToken(userId: any, type: string) {
     const result = { sub: userId, type };
@@ -58,15 +48,8 @@ export class TokensService {
         },
       });
 
-      this.sendToQueue('tokenCreateLogs', {
-        type: 'createToken',
-        ...newToken,
-      });
-
       return newToken;
     } catch (err) {
-      this.sendToQueue('tokenErrorLogs', err);
-
       throw new BadRequestException({
         status: 400,
         message: err.message,
@@ -100,25 +83,12 @@ export class TokensService {
       data: UpdateTokenDto,
     });
 
-    this.sendToQueue('tokenUpdateLogs', {
-      type: 'tokenUpdate',
-      id: token.id,
-      update: token.updated_at,
-      fields: Object.keys(updateTokenDto),
-    });
-
     return token;
   }
 
   async remove(id: string, user: any) {
     await this.findOne(id, user);
     const token = await this.prisma.token.delete({ where: { id } });
-
-    this.sendToQueue('tokenRemoveLogs', {
-      type: 'removeToken',
-      id: token.id,
-      update: token.updated_at,
-    });
 
     return;
   }
