@@ -1,6 +1,6 @@
 import { BullModule, InjectQueue } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, MiddlewareBuilder } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -13,10 +13,11 @@ import { ErrorsLogsConsumerService } from './jobs/errors-logs.consumer.service';
 import { ErrorsLogsProducerService } from './jobs/errors-logs.producer.service';
 import { GetCreditCardService } from './utils/getCreditCardBrand.service';
 import { HttpExceptionFilter } from './utils/http-exception.filter';
+import { RollbarService } from './utils/rollbar.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
@@ -36,11 +37,13 @@ import { HttpExceptionFilter } from './utils/http-exception.filter';
     BullModule.registerQueue({ name: process.env.REDIS_ERRORS_QUEUE }),
   ],
   providers: [
+    ConfigService,
     PrismaService,
     JwtStrategy,
     GetCreditCardService,
     ErrorsLogsProducerService,
     ErrorsLogsConsumerService,
+    RollbarService,
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,

@@ -9,11 +9,15 @@ import {
 } from '@nestjs/common';
 import { Queue } from 'bull';
 import { Request, Response } from 'express';
+import { RollbarService } from './rollbar.service';
 
 @Injectable()
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  constructor(@InjectQueue('errors_logs') private errorQueue: Queue) {}
+  constructor(
+    private rollbarService: RollbarService,
+    @InjectQueue('errors_logs') private errorQueue: Queue,
+  ) {}
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -32,17 +36,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    this.errorQueue.add({
-      statusCode: status,
-      method: request.method,
-      params: request.params,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      body: request.body,
-      headers: request.headers,
-      user: request?.user,
-      error: exception.getResponse(),
-    });
+    this.rollbarService.critical(
+      {
+        statusCode: status,
+        method: request.method,
+        params: request.params,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        body: request.body,
+        headers: request.headers,
+        person: request?.user,
+        error: exception.getResponse(),
+      },
+      exception.getResponse(),
+    );
 
     response.status(status).json({
       statusCode: status,
