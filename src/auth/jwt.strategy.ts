@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PrismaService } from 'src/common/utils/prisma.service';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { PrismaService } from 'src/modules/common/utils/prisma.service';
+import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
 
 export class UserToken {
   id: string;

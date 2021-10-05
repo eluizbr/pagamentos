@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { CardsModule } from './cards/cards.module';
-import { CostumersModule } from './costumers/costumers.module';
-import { MerchantsModule } from './merchants/merchants.module';
-import { ProfilesModule } from './profiles/profiles.module';
-import { ProvidersModule } from './providers/providers.module';
-import { TokensModule } from './tokens/tokens.module';
-import { UsersModule } from './users/users.module';
+import { CardsModule } from './modules/cards/cards.module';
+import { ChargesModule } from './modules/charges/charges.module';
+import { CostumersModule } from './modules/costumers/costumers.module';
+import { MerchantsModule } from './modules/merchants/merchants.module';
+import { ProfilesModule } from './modules/profiles/profiles.module';
+import { ProvidersModule } from './modules/providers/providers.module';
+import { TokensModule } from './modules/tokens/tokens.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UsersModule } from './users/users.module';
     ProvidersModule,
     CostumersModule,
     CardsModule,
+    ChargesModule,
   ],
   providers: [],
 })

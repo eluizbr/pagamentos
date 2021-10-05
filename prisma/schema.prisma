@@ -66,6 +66,7 @@ model Profile {
   token         Token[]
 
   costumers Costumers[]
+  Charges   Charges[]
   @@index([name, userId])
 }
 
@@ -95,6 +96,7 @@ model Merchants {
   userId     String?         @db.VarChar(255)
   provider   Providers[]
 
+  Charges Charges[]
   @@index([profileId, status, mcc])
 }
 
@@ -143,6 +145,7 @@ model Costumers {
   profile       Profile[]            @relation(fields: [profileId], references: [id])
   cards         Cards[]
 
+  Charges Charges[]
   @@unique([document, profileId])
   @@index([email])
 }
@@ -177,5 +180,66 @@ model Cards {
   costumerId      String      @db.VarChar(255)
   costumer        Costumers[] @relation(fields: [costumerId], references: [id])
 
+  Charges Charges[]
   @@index([brand, status])
+}
+
+enum paymentMethodType {
+  boleto
+  credit
+  pix
+}
+
+model Charges {
+  id                  String            @id @default(uuid()) @db.VarChar(255)
+  amount              Decimal           @default(0.0)
+  currency            String?           @default("BRL") @db.VarChar(255)
+  statementDescriptor String?           @db.VarChar(255)
+  description         String?           @db.VarChar(255)
+  orderId             String?           @db.VarChar(255)
+  capture             Boolean?          @default(false)
+  status              CardsStatus?
+  paymentMethod       paymentMethodType
+  installments        Int?              @default(1)
+  expiresDate         String?           @db.VarChar(15)
+  instructions        String?           @db.VarChar(255)
+  interestDays        Int?              @default(1)
+  interestAmount      Decimal?          @default(0.0)
+  interestPercentage  Int?              @default(0)
+  fineDays            Int?              @default(1)
+  fineAmount          Decimal?          @default(0.0)
+  finePercentage      Int?              @default(0)
+
+  card   Cards?  @relation(fields: [cardId], references: [id])
+  cardId String? @db.VarChar(255)
+
+  costumer   Costumers? @relation(fields: [costumerId], references: [id])
+  costumerId String?    @db.VarChar(255)
+
+  Profile   Profile? @relation(fields: [profileId], references: [id])
+  profileId String?  @db.VarChar(255)
+
+  mechant    Merchants? @relation(fields: [merchantId], references: [id])
+  merchantId String?    @db.VarChar(255)
+
+  Transactions Transactions[]
+}
+
+model Transactions {
+  id                       String  @id @default(uuid()) @db.VarChar(255)
+  amount                   Decimal @default(0.0)
+  currency                 String? @default("BRL") @db.VarChar(255)
+  idempotencyKey           String  @db.VarChar(255)
+  providerId               String  @db.VarChar(255)
+  providerType             String  @db.VarChar(255)
+  transactionId            String  @db.VarChar(255)
+  authorizationNsu         String  @db.VarChar(255)
+  status                   String  @db.VarChar(255)
+  requestType              String  @db.VarChar(255)
+  responseTs               String  @db.VarChar(255)
+  networkAuthorizationCode String  @db.VarChar(255)
+  networkResponseCode      String  @db.VarChar(255)
+
+  charge   Charges[] @relation(fields: [chargeId], references: [id])
+  chargeId String?   @db.VarChar(255)
 }
