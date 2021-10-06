@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Charges" ALTER COLUMN "amount" DROP DEFAULT,
+ALTER COLUMN "currency" DROP DEFAULT;

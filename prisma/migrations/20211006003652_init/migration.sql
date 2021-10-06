@@ -1,0 +1,18 @@
+-- AlterTable
+ALTER TABLE "Charges" ADD COLUMN     "amount" DECIMAL(65,30) NOT NULL DEFAULT 0.0,
+ADD COLUMN     "capture" BOOLEAN DEFAULT false,
+ADD COLUMN     "currency" VARCHAR(255),
+ADD COLUMN     "description" VARCHAR(255),
+ADD COLUMN     "expiresDate" VARCHAR(15),
+ADD COLUMN     "fineAmount" DECIMAL(65,30) DEFAULT 0.0,
+ADD COLUMN     "fineDays" INTEGER DEFAULT 1,
+ADD COLUMN     "finePercentage" INTEGER DEFAULT 0,
+ADD COLUMN     "installments" INTEGER DEFAULT 1,
+ADD COLUMN     "instructions" VARCHAR(255),
+ADD COLUMN     "interestAmount" DECIMAL(65,30) DEFAULT 0.0,
+ADD COLUMN     "interestDays" INTEGER DEFAULT 1,
+ADD COLUMN     "interestPercentage" INTEGER DEFAULT 0,
+ADD COLUMN     "orderId" VARCHAR(255),
+ADD COLUMN     "paymentMethod" TEXT,
+ADD COLUMN     "statementDescriptor" VARCHAR(255),
+ADD COLUMN     "status" TEXT DEFAULT E'pending';

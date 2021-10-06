@@ -6,18 +6,25 @@ import {
   Param,
   Patch,
   Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ChargesService } from './charges.service';
 import { CreateChargeDto } from './dto/create-charge.dto';
 import { UpdateChargeDto } from './dto/update-charge.dto';
 
+@ApiBearerAuth()
+@ApiTags('Charges')
 @Controller('charges')
+@UseGuards(AuthGuard())
 export class ChargesController {
   constructor(private readonly chargesService: ChargesService) {}
 
   @Post()
-  create(@Body() createChargeDto: CreateChargeDto) {
-    return 'this.chargesService.create(createChargeDto);';
+  create(@Body() createChargeDto: CreateChargeDto, @Request() req) {
+    return this.chargesService.create(createChargeDto, req.user);
   }
 
   @Get()

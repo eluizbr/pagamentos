@@ -1,5 +1,6 @@
 import { Prisma } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
+import { UserToken } from 'src/auth/jwt.strategy';
 import { PrismaService } from '../common/utils/prisma.service';
 import { UpdateChargeDto } from './dto/update-charge.dto';
 
@@ -7,10 +8,12 @@ import { UpdateChargeDto } from './dto/update-charge.dto';
 export class ChargesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(data: Prisma.ChargesCreateInput) {
-    return this.prisma.charges.create({
-      data,
+  async create(data: Prisma.ChargesCreateInput, user: UserToken) {
+    const charge = await this.prisma.charges.create({
+      data: data,
     });
+
+    return charge;
   }
 
   findAll() {
