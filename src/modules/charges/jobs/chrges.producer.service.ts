@@ -11,4 +11,8 @@ export class ChargesProducerService {
   async getCostumer(data: any) {
     await this.charcheQueue.add('getCostumer', data);
   }
+
+  async getMerchant(data: any) {
+    await this.charcheQueue.add('getMerchant', data);
+  }
 }
