@@ -4,7 +4,7 @@ import { IsNotEmpty, IsNumber, IsString, ValidateIf } from 'class-validator';
 export class CreateChargeDto {
   @IsNotEmpty()
   @IsNumber()
-  amount: Prisma.Decimal;
+  amount: number;
 
   @IsNotEmpty()
   @IsString()

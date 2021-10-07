@@ -35,6 +35,7 @@ import { RollbarService } from './utils/rollbar.service';
     BullModule.registerQueue({ name: process.env.REDIS_TOKEN_QUEUE }),
     BullModule.registerQueue({ name: process.env.REDIS_AUTH_QUEUE }),
     BullModule.registerQueue({ name: process.env.REDIS_ERRORS_QUEUE }),
+    BullModule.registerQueue({ name: process.env.REDIS_CHARGES_QUEUE }),
   ],
   providers: [
     ConfigService,
@@ -64,6 +65,7 @@ export class CommonModule {
     @InjectQueue(process.env.REDIS_USERS_QUEUE) private userQueue: Queue,
     @InjectQueue(process.env.REDIS_PROFILE_QUEUE) private profileQueue: Queue,
     @InjectQueue(process.env.REDIS_TOKEN_QUEUE) private tokenQueue: Queue,
+    @InjectQueue(process.env.REDIS_CHARGES_QUEUE) private chargeQueue: Queue,
   ) {}
 
   configure(consumer: MiddlewareBuilder) {
@@ -73,6 +75,7 @@ export class CommonModule {
       new BullAdapter(this.userQueue),
       new BullAdapter(this.profileQueue),
       new BullAdapter(this.tokenQueue),
+      new BullAdapter(this.chargeQueue),
     ]);
     consumer.apply(router).forRoutes('/admin');
   }

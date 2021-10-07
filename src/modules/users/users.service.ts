@@ -50,7 +50,7 @@ export class UsersService {
       return user;
     } catch (err) {
       throw new BadRequestException({
-        status: 404,
+        status: 400,
         message: `O campo ${err.meta.target}, já esta em uso por outro usuário!`,
       });
     }

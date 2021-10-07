@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -23,8 +22,8 @@ export class ChargesController {
   constructor(private readonly chargesService: ChargesService) {}
 
   @Post()
-  create(@Body() createChargeDto: CreateChargeDto, @Request() req) {
-    return this.chargesService.create(createChargeDto, req.user);
+  create(@Body() createChargeDto: CreateChargeDto) {
+    return this.chargesService.create(createChargeDto);
   }
 
   @Get()

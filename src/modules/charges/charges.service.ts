@@ -1,19 +1,38 @@
 import { Prisma } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
-import { UserToken } from 'src/auth/jwt.strategy';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../common/utils/prisma.service';
 import { UpdateChargeDto } from './dto/update-charge.dto';
+import { ChargesProducerService } from './jobs/chrges.producer.service';
 
 @Injectable()
 export class ChargesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private chargeProducer: ChargesProducerService,
+    private readonly prisma: PrismaService,
+  ) {}
 
-  async create(data: Prisma.ChargesCreateInput, user: UserToken) {
-    const charge = await this.prisma.charges.create({
-      data: data,
-    });
+  async create(data: Prisma.ChargesCreateInput) {
+    try {
+      const charge = await this.prisma.charges.create({
+        data: data,
+      });
 
-    return charge;
+      this.chargeProducer.getCostumer(charge);
+      /**
+       * [X] Enviar para fila
+       * [X] Buscar os dados do Custumer
+       * [] Buscar os dados o Marchant
+       * [] Se cartão, buscar os dados do cartão no vault
+       * [] Constriur o payload ORDER
+       * [] Enviar o payload para o provedor conforme o tipo preferencial para essa ORDER
+       */
+      return charge;
+    } catch (err) {
+      throw new BadRequestException({
+        status: 400,
+        message: `Erro ao criar a charge`,
+      });
+    }
   }
 
   findAll() {
