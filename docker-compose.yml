@@ -64,8 +64,19 @@ services:
       - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=123456
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
 
+  postgresql:
+    image: docker.io/bitnami/postgresql:11
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+
 volumes:
   mongodb_master_data:
     driver: local
   redis_data:
+    driver: local
+  postgresql_data:
     driver: local

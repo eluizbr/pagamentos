@@ -5,10 +5,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/modules/common/utils/prisma.service';
+import { ElasticQueryService } from '../common/services/elastic.query.service';
 
 @Injectable()
 export class ProfilesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly elasticService: ElasticQueryService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   async create(data: Prisma.ProfileCreateInput, userId: string) {
     if (!userId) {
@@ -33,30 +37,12 @@ export class ProfilesService {
     }
   }
 
-  findAll(where: any) {
-    return this.prisma.profile.findMany({
-      where,
-      include: {
-        token: true,
-        merchant: true,
-        costumers: {
-          include: { cards: true },
-        },
-      },
-    });
+  async findAll(where: any) {
+    return await this.elasticService.findAll('profile', where);
   }
 
   async findOne(where: Prisma.ProfileWhereInput) {
-    const profile = await this.prisma.profile.findFirst({
-      where,
-      include: {
-        user: { select: { id: true } },
-        token: true,
-        costumers: {
-          include: { cards: true },
-        },
-      },
-    });
+    const profile = await this.elasticService.findOne('profile', where);
     if (!profile) {
       throw new NotFoundException(`Pofile id ${where.id}, não existe!`);
     }
@@ -76,7 +62,9 @@ export class ProfilesService {
   }
 
   async remove(where: any) {
+    console.log(where);
     await this.findOne(where);
+
     const { id, userId } = where;
 
     try {

@@ -145,7 +145,7 @@ model Costumers {
   created_at    DateTime             @default(now())
   updated_at    DateTime             @updatedAt
   profileId     String               @db.VarChar(255)
-  profile       Profile[]            @relation(fields: [profileId], references: [id])
+  profile       Profile[]            @relation(fields: [profileId], references: [id], onDelete: Cascade)
   cards         Cards[]
 
   Charges Charges[]
@@ -181,7 +181,7 @@ model Cards {
   cvvChecked      CardsStatus @default(pending)
   created_at      DateTime    @default(now())
   costumerId      String      @db.VarChar(255)
-  costumer        Costumers[] @relation(fields: [costumerId], references: [id])
+  costumer        Costumers[] @relation(fields: [costumerId], references: [id], onDelete: Cascade)
 
   Charges Charges[]
   @@index([brand, status])
@@ -216,7 +216,7 @@ model Charges {
 
 
   transactions Transactions[]
-  profile      Profile?       @relation(fields: [profileId], references: [id])
+  profile      Profile?       @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId    String         @db.VarChar(255)
   merchant     Merchants?     @relation(fields: [merchantId], references: [id])
   merchantId   String         @db.VarChar(255)
