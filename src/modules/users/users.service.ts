@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { argon2id, hash as hashPassword } from 'argon2';
 import { PrismaService } from 'src/modules/common/utils/prisma.service';
+import { ElasticQueryService } from '../common/services/elastic.query.service';
 import { UserProducerService } from './jobs/users.producer.service';
 
 const select = {
@@ -23,6 +24,7 @@ const select = {
 @Injectable()
 export class UsersService {
   constructor(
+    private readonly elasticService: ElasticQueryService,
     private userProducer: UserProducerService,
     private readonly prisma: PrismaService,
   ) {}
@@ -56,15 +58,13 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return this.prisma.user.findMany({ select });
+  async findAll() {
+    const query = {};
+    return await this.elasticService.findAll('users', query);
   }
 
   async findOne(where: Prisma.UserWhereUniqueInput) {
-    const user = this.prisma.user.findUnique({
-      where,
-      select,
-    });
+    const user = await this.elasticService.findOne('users', where);
 
     if (!user) throw new NotFoundException(`User with id ${where}, not found!`);
     return user;
