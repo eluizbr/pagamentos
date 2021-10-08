@@ -39,7 +39,7 @@ export class TokensController {
   @Get()
   @ApiDocGenericGetAll('token', ResultTokenDto)
   findAll(@Request() req) {
-    return this.tokensService.findAll(req.user.id);
+    return this.tokensService.findAll(req.user);
   }
 
   @Get(':id')

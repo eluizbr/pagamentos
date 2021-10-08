@@ -4,14 +4,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { UserToken } from 'src/auth/jwt.strategy';
 import { PrismaService } from 'src/modules/common/utils/prisma.service';
 import { ProfilesService } from 'src/modules/profiles/profiles.service';
+import { ElasticQueryService } from '../common/services/elastic.query.service';
 import { CreateTokenDto } from './dto/create-token.dto';
 import { UpdateTokenDto } from './dto/update-token.dto';
 
 @Injectable()
 export class TokensService {
   constructor(
+    private readonly elasticService: ElasticQueryService,
     private readonly prisma: PrismaService,
     private readonly profileService: ProfilesService,
     private readonly jwtService: JwtService,
@@ -57,26 +60,26 @@ export class TokensService {
     }
   }
 
-  async findAll(user: any) {
-    const { id, profileId } = user;
-    return this.prisma.token.findMany({ where: { profileId } });
+  async findAll(where: UserToken) {
+    const { id, profileId } = where;
+    return await this.elasticService.findAll('token', { profileId });
   }
 
-  async findOne(id: string, user: any) {
+  async findOne(id: string, user: UserToken) {
     const { profileId } = user;
 
     if (!profileId) {
       throw new NotFoundException(`Profile não enviado!`);
     }
 
-    const token = await this.prisma.token.findUnique({ where: { id } });
+    const token = await this.elasticService.findOne('token', { id, profileId });
     if (!token)
       throw new NotFoundException(`Token com o id ${id}, não existe!`);
 
     return token;
   }
 
-  async update(id: string, userId: string, updateTokenDto: UpdateTokenDto) {
+  async update(id: string, userId: UserToken, updateTokenDto: UpdateTokenDto) {
     await this.findOne(id, userId);
     const token = await this.prisma.token.update({
       where: { id },
@@ -86,7 +89,7 @@ export class TokensService {
     return token;
   }
 
-  async remove(id: string, user: any) {
+  async remove(id: string, user: UserToken) {
     await this.findOne(id, user);
     const token = await this.prisma.token.delete({ where: { id } });
 
