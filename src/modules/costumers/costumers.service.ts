@@ -7,11 +7,15 @@ import {
 import { cnpj, cpf } from 'cpf-cnpj-validator';
 import { UserToken } from 'src/auth/jwt.strategy';
 import { PrismaService } from 'src/modules/common/utils/prisma.service';
+import { ElasticQueryService } from '../common/services/elastic.query.service';
 import { UpdateCostumerDto } from './dto/update-costumer.dto';
 
 @Injectable()
 export class CostumersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly elasticService: ElasticQueryService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   async create(data: Prisma.CostumersCreateInput, user: UserToken) {
     const { id, profileId } = user;
@@ -57,20 +61,15 @@ export class CostumersService {
     }
   }
 
-  findAll(user: UserToken) {
-    const { id, profileId } = user;
-    return this.prisma.costumers.findMany({
-      where: { profileId },
-      include: { cards: true },
-    });
+  async findAll(where: UserToken) {
+    const { id, profileId } = where;
+    return this.elasticService.findAll('costumers', { profileId });
   }
 
-  async findOne(id: string, user: UserToken) {
-    const { profileId } = user;
-
-    const costumer = await this.prisma.costumers.findFirst({
-      where: { id, profileId },
-      include: { cards: true },
+  async findOne(id: string, where: UserToken) {
+    const costumer = await this.elasticService.findAll('costumers', {
+      id,
+      profileId: where.profileId,
     });
 
     if (!costumer) {
