@@ -6,10 +6,14 @@ import {
 } from '@nestjs/common';
 import { UserToken } from 'src/auth/jwt.strategy';
 import { PrismaService } from 'src/modules/common/utils/prisma.service';
+import { ElasticQueryService } from '../common/services/elastic.query.service';
 
 @Injectable()
 export class ProvidersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly elasticService: ElasticQueryService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   async create(data: Prisma.ProvidersCreateInput, request: any) {
     const { id, profileId } = request;
@@ -36,16 +40,19 @@ export class ProvidersService {
     }
   }
 
-  findAll(user: UserToken) {
+  async findAll(user: UserToken) {
     const { id, profileId } = user;
-    return this.prisma.providers.findMany({
-      where: { userId: id, profileId: profileId },
+    return await this.elasticService.findAll('providers', {
+      userId: id,
+      profileId,
     });
   }
 
   async findOne(id: string, user: UserToken) {
-    const provider = await this.prisma.providers.findFirst({
-      where: { id, userId: user.id, profileId: user.profileId },
+    const provider = await this.elasticService.findOne('providers', {
+      id,
+      userId: user.id,
+      profileId: user.profileId,
     });
     if (!provider) {
       throw new NotFoundException(`Provider id ${id}, não existe!`);
