@@ -40,8 +40,15 @@ export class MerchantsController {
   @Get()
   @ApiDocGenericGetAll('merchant', MerchantResult)
   findAll(@Request() req) {
-    const { id, profile } = req.user;
-    return this.merchantsService.findAll({ userId: id, profileId: profile });
+    const { id, profileId } = req.user;
+    return this.merchantsService.findAll({ userId: id, profileId });
+  }
+
+  @Get(':id')
+  @ApiDocGenericGetAll('merchant', MerchantResult)
+  findOne(@Request() req) {
+    const { id, profileId } = req.user;
+    return this.merchantsService.findOne({ userId: id, profileId });
   }
 
   @Patch(':id')

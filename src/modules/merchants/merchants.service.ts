@@ -5,10 +5,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/modules/common/utils/prisma.service';
+import { ElasticQueryService } from '../common/services/elastic.query.service';
 
 @Injectable()
 export class MerchantsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly elasticService: ElasticQueryService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   async create(data: any, request: any) {
     const { id, profileId } = request;
@@ -16,13 +20,6 @@ export class MerchantsService {
     const merchant = await this.prisma.merchants.findFirst({
       where: { profileId },
     });
-
-    if (merchant) {
-      throw new BadRequestException({
-        status: 400,
-        message: 'Profile já possuiu um merchant',
-      });
-    }
 
     try {
       return await this.prisma.merchants.create({
@@ -40,18 +37,12 @@ export class MerchantsService {
     }
   }
 
-  findAll(where: any) {
-    return this.prisma.merchants.findMany({
-      where,
-      include: { _count: true, provider: true },
-    });
+  async findAll(where: any) {
+    return await this.elasticService.findAll('merchants', where);
   }
 
   async findOne(where: Prisma.MerchantsWhereInput) {
-    const merchant = await this.prisma.merchants.findFirst({
-      where,
-      include: { _count: true, provider: true },
-    });
+    const merchant = await this.elasticService.findOne('merchants', where);
 
     if (!merchant) {
       throw new NotFoundException(`Merchant id ${where.id}, não existe!`);
