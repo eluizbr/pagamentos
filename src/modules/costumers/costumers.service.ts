@@ -34,7 +34,6 @@ export class CostumersService {
       return costumer;
     } catch (err) {
       let message = '';
-      console.log(data.document.length);
 
       if (data.document.length >= 12) {
         if (!cnpj.isValid(data.document))
@@ -67,7 +66,7 @@ export class CostumersService {
   }
 
   async findOne(id: string, where: UserToken) {
-    const costumer = await this.elasticService.findAll('costumers', {
+    const costumer = await this.elasticService.findOne('costumers', {
       id,
       profileId: where.profileId,
     });

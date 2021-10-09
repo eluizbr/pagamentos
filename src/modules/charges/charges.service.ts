@@ -1,5 +1,6 @@
 import { Prisma } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { ElasticQueryService } from '../common/services/elastic.query.service';
 import { PrismaService } from '../common/utils/prisma.service';
 import { UpdateChargeDto } from './dto/update-charge.dto';
 import { ChargesProducerService } from './jobs/chrges.producer.service';
@@ -7,6 +8,7 @@ import { ChargesProducerService } from './jobs/chrges.producer.service';
 @Injectable()
 export class ChargesService {
   constructor(
+    private readonly elasticService: ElasticQueryService,
     private chargeProducer: ChargesProducerService,
     private readonly prisma: PrismaService,
   ) {}
@@ -36,7 +38,7 @@ export class ChargesService {
   }
 
   findAll() {
-    return `This action returns all charges`;
+    return this.elasticService.findAll('charges', {});
   }
 
   findOne(id: number) {

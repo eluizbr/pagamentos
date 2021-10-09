@@ -43,7 +43,7 @@ export class CardsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.cardsService.findOne(+id);
+    return this.cardsService.findOne(id);
   }
 
   @Patch(':id')

@@ -9,10 +9,10 @@ export class ChargesProducerService {
   ) {}
 
   async getCostumer(data: any) {
-    await this.charcheQueue.add('getCostumer', data);
+    await this.charcheQueue.add('getCostumer', { ...data }, { delay: 3000 });
   }
 
-  async getMerchant(data: any) {
-    await this.charcheQueue.add('getMerchant', data);
+  async processCharge(data: any) {
+    await this.charcheQueue.add('processCharge', data, { delay: 3000 });
   }
 }

@@ -62,7 +62,6 @@ export class ProfilesService {
   }
 
   async remove(where: any) {
-    console.log(where);
     await this.findOne(where);
 
     const { id, userId } = where;

@@ -25,10 +25,13 @@ export class ElasticQueryService {
       },
     });
 
-    return elastic.body.hits.hits.map((data: any) => {
-      delete data._source._meta;
-      return data._source;
-    });
+    if (elastic.body.hits) {
+      return elastic.body.hits.hits.map((data: any) => {
+        delete data._source._meta;
+        return data._source;
+      });
+    }
+    return [];
   }
   async findOne(index: string, term: any) {
     const must = [];

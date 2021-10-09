@@ -5,12 +5,14 @@ import { map } from 'rxjs';
 import { UserToken } from 'src/auth/jwt.strategy';
 import { GetCreditCardService } from 'src/modules/common/utils/getCreditCardBrand.service';
 import { PrismaService } from 'src/modules/common/utils/prisma.service';
+import { ElasticQueryService } from '../common/services/elastic.query.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
 
 @Injectable()
 export class CardsService {
   constructor(
+    private readonly elasticService: ElasticQueryService,
     private readonly prisma: PrismaService,
     private httpService: HttpService,
     private readonly crediteCardService: GetCreditCardService,
@@ -65,10 +67,10 @@ export class CardsService {
   }
 
   findAll() {
-    return `This action returns all cards`;
+    return this.elasticService.findAll('cards', {});
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} card`;
   }
 

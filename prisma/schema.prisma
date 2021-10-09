@@ -61,7 +61,7 @@ model Profile {
   created_at    DateTime     @default(now())
   updated_at    DateTime     @updatedAt
   merchant      Merchants[]
-  user          User[]       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User[]       @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId        String?      @db.VarChar(255)
   token         Token[]
 
@@ -73,7 +73,7 @@ model Profile {
 }
 
 model Token {
-  profile    Profile[] @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profile    Profile[] @relation(fields: [profileId], references: [id], onDelete: SetDefault)
   profileId  String?   @db.VarChar(255)
   id         String    @id @default(uuid()) @db.VarChar(255)
   type       TokenType
@@ -93,7 +93,7 @@ model Merchants {
   status     MecrchantStatus @default(pending)
   created_at DateTime        @default(now())
   updated_at DateTime        @updatedAt
-  profile    Profile?        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profile    Profile?        @relation(fields: [profileId], references: [id], onDelete: SetDefault)
   profileId  String          @db.VarChar(255)
   userId     String?         @db.VarChar(255)
   provider   Providers[]
@@ -119,7 +119,7 @@ model Providers {
   profileId   String?       @db.VarChar(255)
   userId      String?       @db.VarChar(255)
   merchantId  String        @db.VarChar(255)
-  merchant    Merchants[]   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  merchant    Merchants[]   @relation(fields: [merchantId], references: [id], onDelete: SetDefault)
 
 }
 
@@ -146,8 +146,9 @@ model Costumers {
   created_at    DateTime             @default(now())
   updated_at    DateTime             @updatedAt
   profileId     String               @db.VarChar(255)
-  profile       Profile[]            @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  cards         Cards[]
+  profile       Profile[]            @relation(fields: [profileId], references: [id], onDelete: SetNull)
+
+  cards Cards[]
 
   Charges Charges[]
   @@unique([document, profileId])
@@ -182,7 +183,7 @@ model Cards {
   cvvChecked      CardsStatus @default(pending)
   created_at      DateTime    @default(now())
   costumerId      String      @db.VarChar(255)
-  costumer        Costumers[] @relation(fields: [costumerId], references: [id], onDelete: Cascade)
+  costumer        Costumers[] @relation(fields: [costumerId], references: [id], onDelete: SetDefault)
 
   Charges Charges[]
   @@index([brand, status])
@@ -219,11 +220,11 @@ model Charges {
   transactions Transactions[]
   profile      Profile?       @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId    String         @db.VarChar(255)
-  merchant     Merchants?     @relation(fields: [merchantId], references: [id])
+  merchant     Merchants?     @relation(fields: [merchantId], references: [id], onDelete: SetNull)
   merchantId   String         @db.VarChar(255)
-  costumer     Costumers?     @relation(fields: [costumerId], references: [id])
+  costumer     Costumers?     @relation(fields: [costumerId], references: [id], onDelete: SetDefault)
   costumerId   String         @db.VarChar(255)
-  card         Cards?         @relation(fields: [cardId], references: [id])
+  card         Cards?         @relation(fields: [cardId], references: [id], onDelete: Cascade)
   cardId       String         @db.VarChar(255)
 }
 
@@ -242,6 +243,6 @@ model Transactions {
   networkAuthorizationCode String  @db.VarChar(255)
   networkResponseCode      String  @db.VarChar(255)
 
-  charge   Charges[] @relation(fields: [chargeId], references: [id])
+  charge   Charges[] @relation(fields: [chargeId], references: [id], onDelete: SetNull)
   chargeId String?   @db.VarChar(255)
 }
