@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -27,13 +28,17 @@ export class ChargesController {
   }
 
   @Get()
-  findAll() {
-    return this.chargesService.findAll();
+  findAll(@Req() req) {
+    return this.chargesService.findAll(req.user);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.chargesService.findOne(+id);
+  findOne(@Param('id') id: string, @Req() req) {
+    return this.chargesService.findOne(id, req.user);
+  }
+  @Get(':costumerId/:profileId')
+  costumer(@Param() params: any) {
+    return this.chargesService.costumer(params);
   }
 
   @Patch(':id')

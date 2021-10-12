@@ -59,7 +59,10 @@ export class UsersController {
    */
   @Patch(':id')
   @ApiDocGenericPatch('usuário', User, User)
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<UpdateUserDto> {
     return this.usersService.update({ id }, updateUserDto);
   }
 

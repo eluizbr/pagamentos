@@ -20,12 +20,16 @@ export class CardsService {
 
   async create(data: Prisma.CardsCreateInput, user: UserToken) {
     const { costumerId } = data;
+
     try {
       const card = await this.prisma.cards.create({
         data: {
           ...data,
           costumer: {
             connect: { id: data.costumerId },
+          },
+          profile: {
+            connect: { id: user.profileId },
           },
         },
       });
@@ -66,19 +70,31 @@ export class CardsService {
     }
   }
 
-  findAll() {
-    return this.elasticService.findAll('cards', {});
+  findAll(where: Prisma.CardsWhereInput) {
+    return this.elasticService.findAll('cards', where);
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} card`;
+  findOne(id: string, user: UserToken) {
+    const { profileId } = user;
+    return this.elasticService.findOne('cards', { id, profileId });
   }
 
   update(id: number, updateCardDto: UpdateCardDto) {
     return `This action updates a #${id} card`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} card`;
+  async remove(id: string, user: UserToken) {
+    await this.findOne(id, user);
+    const { profileId } = user;
+
+    try {
+      await this.prisma.cards.delete({ where: { id } });
+      return;
+    } catch (err) {
+      throw new BadRequestException({
+        status: 404,
+        message: `Erro ao tentar remover o card ${id}`,
+      });
+    }
   }
 }

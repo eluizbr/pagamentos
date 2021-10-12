@@ -67,8 +67,9 @@ model Profile {
 
   costumers Costumers[]
 
+  cards   Cards[]
+  charges Charges[]
 
-  Charges Charges[]
   @@index([name, userId])
 }
 
@@ -150,7 +151,7 @@ model Costumers {
 
   cards Cards[]
 
-  Charges Charges[]
+  charges Charges[]
   @@unique([document, profileId])
   @@index([email])
 }
@@ -183,9 +184,12 @@ model Cards {
   cvvChecked      CardsStatus @default(pending)
   created_at      DateTime    @default(now())
   costumerId      String      @db.VarChar(255)
-  costumer        Costumers[] @relation(fields: [costumerId], references: [id], onDelete: SetDefault)
+  costumer        Costumers[] @relation(fields: [costumerId], references: [id], onDelete: Cascade)
 
-  Charges Charges[]
+
+  charges   Charges[]
+  profile   Profile?  @relation(fields: [profileId], references: [id], onDelete: SetDefault)
+  profileId String?   @db.VarChar(255)
   @@index([brand, status])
 }
 

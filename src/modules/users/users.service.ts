@@ -82,7 +82,7 @@ export class UsersService {
   async update(
     where: Prisma.UserWhereUniqueInput,
     data: Prisma.UserUpdateInput,
-  ) {
+  ): Promise<any> {
     await this.findOne(where);
 
     const password = await this.encodePassword(data);

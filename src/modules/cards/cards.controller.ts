@@ -37,13 +37,13 @@ export class CardsController {
   }
 
   @Get()
-  findAll() {
-    return this.cardsService.findAll();
+  findAll(@Request() req) {
+    return this.cardsService.findAll({ profileId: req.user.profileId });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cardsService.findOne(id);
+  findOne(@Param('id') id: string, @Request() req) {
+    return this.cardsService.findOne(id, req.user);
   }
 
   @Patch(':id')
@@ -52,7 +52,7 @@ export class CardsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cardsService.remove(+id);
+  remove(@Param('id') id: string, @Request() req) {
+    return this.cardsService.remove(id, req.user);
   }
 }

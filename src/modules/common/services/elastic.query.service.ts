@@ -15,7 +15,6 @@ export class ElasticQueryService {
         },
       }),
     );
-
     const elastic = await this.esService.search({
       index,
       body: {

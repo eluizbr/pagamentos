@@ -1,5 +1,6 @@
 import { Prisma } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { UserToken } from 'src/auth/jwt.strategy';
 import { ElasticQueryService } from '../common/services/elastic.query.service';
 import { PrismaService } from '../common/utils/prisma.service';
 import { UpdateChargeDto } from './dto/update-charge.dto';
@@ -37,12 +38,18 @@ export class ChargesService {
     }
   }
 
-  findAll() {
-    return this.elasticService.findAll('charges', {});
+  findAll(user: UserToken) {
+    const { profileId } = user;
+    return this.elasticService.findAll('charges', { profileId });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} charge`;
+  costumer(where: any) {
+    return this.elasticService.findAll('charges', where);
+  }
+
+  findOne(id: string, user: UserToken) {
+    const { profileId } = user;
+    return this.elasticService.findOne('charges', { id, profileId });
   }
 
   update(id: number, updateChargeDto: UpdateChargeDto) {
