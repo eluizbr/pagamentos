@@ -22,14 +22,17 @@ jobs:
       - name: Use Node.js 14
         uses: actions/setup-node@v3
         with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}        
           node-version: 14
           cache: 'npm'
+          
       - name: Install dependencies
         run: npm install          
       - uses: actions/cache@v3
         id: npm-cache
         with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-  
