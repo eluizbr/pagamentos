@@ -1,0 +1,33 @@
+on:
+  push:
+    branches:
+      - main
+
+env:
+  SECRET_MANAGER: dev/auth-api-stage
+  ECR_REPOSITORY: auth-api-dev # Alterar para o nome do repo
+  APP_NAME: auth-api # Alterar para o nome do APP
+  CLUSTER_NAME: vobi-dev-eks # Alterar para o nome do cluster
+  IMAGE_TAG: ${{ github.sha }}
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+
+name: Auth API DEVELOP
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-  
