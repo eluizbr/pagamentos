@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - main-4
+      - main-5
 
 env:
   SECRET_MANAGER: dev/auth-api-stage
